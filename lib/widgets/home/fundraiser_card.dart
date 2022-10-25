@@ -90,7 +90,7 @@ class FundraiserCard extends StatelessWidget {
                       Radius.circular(12),
                     ),
                     child: LinearProgressIndicator(
-                      value: (goal / raisedAmount * 100),
+                      value: (raisedAmount / goal),
                       color: primaryColor,
                       backgroundColor: progressBackgroundColor,
                       minHeight: 5.2,
