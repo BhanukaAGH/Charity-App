@@ -1,3 +1,4 @@
+import 'package:charity_app/screens/select_fundraise_screen.dart';
 import 'package:charity_app/utils/colors.dart';
 import 'package:charity_app/widgets/common/action_button.dart';
 import 'package:charity_app/widgets/common/colored_tabbar.dart';
@@ -36,7 +37,14 @@ class MyFundraisesScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: ActionButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SelectFundraiseScreen(),
+                    ),
+                  );
+                },
                 icons: Icons.add,
               ),
             ),

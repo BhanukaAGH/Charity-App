@@ -33,6 +33,7 @@ class DonateTile extends StatelessWidget {
         selected: true,
         leading: CircleAvatar(
           maxRadius: 24,
+          backgroundColor: borderColor,
           backgroundImage: NetworkImage(
             imgUrl,
           ),
