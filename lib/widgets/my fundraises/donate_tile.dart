@@ -1,3 +1,4 @@
+import 'package:charity_app/screens/chat_screen.dart';
 import 'package:charity_app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -67,7 +68,18 @@ class DonateTile extends StatelessWidget {
           ),
         ),
         trailing: OutlinedButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatScreen(
+                  imgUrl: imgUrl,
+                  name: name,
+                  price: price,
+                ),
+              ),
+            );
+          },
           style: OutlinedButton.styleFrom(
             side: const BorderSide(
               width: 2.5,

@@ -8,3 +8,4 @@ const paginationColor = Color.fromRGBO(131, 145, 161, 1);
 const borderColor = Color.fromRGBO(131, 145, 161, 0.4);
 const progressBackgroundColor = Color.fromRGBO(217, 217, 217, 1);
 const greyTextColor = Color.fromRGBO(139, 147, 157, 1);
+const messageColor = Color.fromRGBO(245, 246, 249, 1);
