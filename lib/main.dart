@@ -1,3 +1,4 @@
+import 'package:charity_app/screens/create_fundraise_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,8 +31,10 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Charity App',
-        theme: ThemeData.light().copyWith(
-          primaryColor: primaryColor,
+        theme: ThemeData(
+          colorScheme: ThemeData().colorScheme.copyWith(
+                primary: primaryColor,
+              ),
         ),
         home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),

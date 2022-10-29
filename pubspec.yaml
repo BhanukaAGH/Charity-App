@@ -45,6 +45,8 @@ dependencies:
   image_picker: ^0.8.6
   google_fonts: ^3.0.1
   carousel_slider: ^4.1.1
+  dotted_border: ^2.0.0+3
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:
