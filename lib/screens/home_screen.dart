@@ -1,4 +1,5 @@
 import 'package:charity_app/screens/select_fundraise_screen.dart';
+import 'package:charity_app/screens/view_single_fundraiser_screen.dart';
 import 'package:charity_app/utils/colors.dart';
 import 'package:charity_app/widgets/common/action_button.dart';
 import 'package:charity_app/widgets/home/category_list.dart';
@@ -27,7 +28,14 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0,
         actions: [
           ActionButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ViewSingleFundraiserScreen(),
+                          ),
+                        );
+            },
             icons: Icons.search,
           ),
           const SizedBox(width: 12),
