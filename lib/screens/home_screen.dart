@@ -1,5 +1,4 @@
 import 'package:charity_app/screens/select_fundraise_screen.dart';
-import 'package:charity_app/screens/view_single_fundraiser_screen.dart';
 import 'package:charity_app/utils/colors.dart';
 import 'package:charity_app/widgets/common/action_button.dart';
 import 'package:charity_app/widgets/home/category_list.dart';
@@ -7,6 +6,8 @@ import 'package:charity_app/widgets/home/curve_painter.dart';
 import 'package:charity_app/widgets/home/slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'search_fundraisers_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,11 +31,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ActionButton(
             onPressed: () {
               Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ViewSingleFundraiserScreen(),
-                          ),
-                        );
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SearchFundraisesScreen(),
+                ),
+              );
             },
             icons: Icons.search,
           ),
