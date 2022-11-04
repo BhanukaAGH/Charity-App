@@ -15,3 +15,9 @@ List<Widget> homeScreenItems = [
   const MyFundraisesScreen(),
   ProfileScreen(uid: FirebaseAuth.instance.currentUser!.uid),
 ];
+
+enum FundraiseType {
+  mySelf,
+  teams,
+  charity,
+}

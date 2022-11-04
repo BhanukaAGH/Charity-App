@@ -1,3 +1,4 @@
+import 'package:charity_app/utils/global_variables.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Fundraise {
@@ -14,6 +15,7 @@ class Fundraise {
   final String recipientPhone;
   final String recipientEmail;
   final bool isDraft;
+  final FundraiseType fundraiseType;
 
   Fundraise({
     required this.fundraiseId,
@@ -29,6 +31,7 @@ class Fundraise {
     required this.recipientPhone,
     required this.recipientEmail,
     required this.isDraft,
+    required this.fundraiseType,
   });
 
   Map<String, dynamic> tojson() {
@@ -46,6 +49,7 @@ class Fundraise {
       'recipientPhone': recipientPhone,
       'recipientEmail': recipientEmail,
       'isDraft': isDraft,
+      'fundraiseType': fundraiseType,
     };
   }
 
@@ -66,6 +70,7 @@ class Fundraise {
       recipientPhone: snapshot['recipientPhone'],
       recipientEmail: snapshot['recipientEmail'],
       isDraft: snapshot['isDraft'],
+      fundraiseType: snapshot['fundraiseType'],
     );
   }
 }

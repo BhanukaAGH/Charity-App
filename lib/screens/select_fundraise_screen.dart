@@ -1,5 +1,6 @@
 import 'package:charity_app/screens/create_fundraise_screen.dart';
 import 'package:charity_app/utils/colors.dart';
+import 'package:charity_app/utils/global_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -70,7 +71,9 @@ class SelectFundraiseScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const CreateFundraiseScreen(),
+                            builder: (context) => CreateFundraiseScreen(
+                              fundraiseType: types[index]['type'],
+                            ),
                           ),
                         );
                       },
@@ -135,17 +138,20 @@ List types = [
   {
     'image': 'assets/type1.png',
     'title': 'Yourself',
+    'type': FundraiseType.mySelf,
     'description': 'Funds are delivered to your bank account for your own use',
   },
   {
     'image': 'assets/type2.png',
     'title': 'Someone else',
+    'type': FundraiseType.teams,
     'description':
         'You’ll invite a beneficiary to receive funds or distribute them yourself',
   },
   {
     'image': 'assets/type3.png',
     'title': 'Charity',
+    'type': FundraiseType.charity,
     'description': 'Funds are delivered to your chosen nonprofit for you',
   },
 ];
