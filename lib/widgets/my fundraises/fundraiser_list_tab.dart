@@ -1,55 +1,40 @@
+import 'package:charity_app/providers/user_provider.dart';
+import 'package:charity_app/utils/utils.dart';
 import 'package:charity_app/widgets/my%20fundraises/my_fundraise_card.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FundraisersTab extends StatelessWidget {
   const FundraisersTab({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context).getUser;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(12),
-      child: SingleChildScrollView(
-        child: Column(
-          children: const [
-            MyFundraiseCard(
-              imageUrl:
-                  'https://images.unsplash.com/photo-1467307983825-619715426c70?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1077&q=80',
-              title: 'African Children Beauty Charity Volunteer Hope',
-              goal: 4800,
-              raisedAmount: 3200,
-              donatorsCount: 1240,
-              daysLeft: 10,
+      child: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('fundraisers')
+            .where('uid', isEqualTo: user.uid)
+            .snapshots(),
+        builder: (context,
+            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) => MyFundraiseCard(
+              snap: snapshot.data!.docs[index].data(),
             ),
-            MyFundraiseCard(
-              imageUrl:
-                  'https://images.unsplash.com/flagged/photo-1555251255-e9a095d6eb9d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
-              title: 'African Children Beauty Charity Volunteer Hope',
-              goal: 4800,
-              raisedAmount: 3200,
-              donatorsCount: 1240,
-              daysLeft: 10,
-            ),
-            MyFundraiseCard(
-              imageUrl:
-                  'https://images.unsplash.com/photo-1507427254987-7be33d0321d3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-              title: 'African Children Beauty Charity Volunteer Hope',
-              goal: 4800,
-              raisedAmount: 3200,
-              donatorsCount: 1240,
-              daysLeft: 10,
-            ),
-            MyFundraiseCard(
-              imageUrl:
-                  'https://images.unsplash.com/flagged/photo-1555251255-e9a095d6eb9d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
-              title: 'African Children Beauty Charity Volunteer Hope',
-              goal: 4800,
-              raisedAmount: 3200,
-              donatorsCount: 1240,
-              daysLeft: 10,
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

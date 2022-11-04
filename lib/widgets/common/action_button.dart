@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 class ActionButton extends StatelessWidget {
   final Function()? onPressed;
   final IconData icons;
+  final Color? lightColor;
+  final Color? iconColor;
 
   const ActionButton({
     super.key,
     required this.onPressed,
     required this.icons,
+    this.lightColor,
+    this.iconColor,
   });
 
   @override
@@ -19,13 +23,13 @@ class ActionButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 6),
         child: Ink(
           width: 42,
-          decoration: const BoxDecoration(
-            color: lightPrimaryColor,
-            borderRadius: BorderRadius.all(
+          decoration: BoxDecoration(
+            color: lightColor ?? lightPrimaryColor,
+            borderRadius: const BorderRadius.all(
               Radius.circular(8),
             ),
           ),
-          child: Icon(icons, color: primaryColor),
+          child: Icon(icons, color: iconColor ?? primaryColor),
         ),
       ),
     );

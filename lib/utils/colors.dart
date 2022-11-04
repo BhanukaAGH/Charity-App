@@ -11,3 +11,5 @@ const greyTextColor = Color.fromRGBO(139, 147, 157, 1);
 const messageColor = Color.fromRGBO(245, 246, 249, 1);
 const imageInputBorderColor = Color.fromRGBO(212, 214, 217, 1);
 const disabledButtonColor = Color.fromRGBO(155, 106, 222, 0.5);
+const lightRedColor = Color.fromRGBO(255, 46, 46, 0.3);
+const redIconColor = Color.fromRGBO(235, 50, 35, 1);

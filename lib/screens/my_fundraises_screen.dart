@@ -85,6 +85,18 @@ class MyFundraisesScreen extends StatelessWidget {
             ActivityTab(),
           ],
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const SelectFundraiseScreen(),
+              ),
+            );
+          },
+          backgroundColor: primaryColor,
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }

@@ -55,37 +55,30 @@ class _RootScreenState extends State<RootScreen> {
         children: homeScreenItems,
       ),
       bottomNavigationBar: CupertinoTabBar(
+        activeColor: primaryColor,
+        inactiveColor: unselectedIconColor,
+        currentIndex: _page,
         backgroundColor: Colors.white,
-        items: [
+        items: const [
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-              color: _page == 0 ? primaryColor : unselectedIconColor,
-            ),
+            label: 'Home',
+            icon: Icon(Icons.home),
           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.volunteer_activism,
-              color: _page == 1 ? primaryColor : unselectedIconColor,
-            ),
+            label: 'Donations',
+            icon: Icon(Icons.volunteer_activism),
           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.notifications,
-              color: _page == 2 ? primaryColor : unselectedIconColor,
-            ),
+            label: 'Notifications',
+            icon: Icon(Icons.notifications),
           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.ballot_outlined,
-              color: _page == 3 ? primaryColor : unselectedIconColor,
-            ),
+            label: 'Fundraisers',
+            icon: Icon(Icons.ballot_outlined),
           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.account_circle,
-              color: _page == 4 ? primaryColor : unselectedIconColor,
-            ),
+            label: 'Profile',
+            icon: Icon(Icons.account_circle),
           ),
         ],
         onTap: navigationTapped,
