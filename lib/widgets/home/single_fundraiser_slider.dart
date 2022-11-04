@@ -13,8 +13,8 @@ final List<String> imgList = [
 ];
 
 class SingleFundraisersSlider extends StatefulWidget {
-  const SingleFundraisersSlider({super.key});
-
+  final img;
+  const SingleFundraisersSlider(this.img, {super.key});
   @override
   State<SingleFundraisersSlider> createState() => _FundraisersSliderState();
 }
@@ -22,13 +22,12 @@ class SingleFundraisersSlider extends StatefulWidget {
 class _FundraisersSliderState extends State<SingleFundraisersSlider> {
   int _current = 0;
   final CarouselController _controller = CarouselController();
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         CarouselSlider(
-          items: imageSliders,
+          items: imageSliders(widget.img),
           carouselController: _controller,
           options: CarouselOptions(
               autoPlay: true,
@@ -41,7 +40,7 @@ class _FundraisersSliderState extends State<SingleFundraisersSlider> {
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: imgList.asMap().entries.map(
+         children: (widget.img as List<dynamic>).asMap().entries.map(
             (entry) {
               return GestureDetector(
                 onTap: () => _controller.animateToPage(entry.key),
@@ -64,8 +63,7 @@ class _FundraisersSliderState extends State<SingleFundraisersSlider> {
     );
   }
 }
-
-final List<Widget> imageSliders = imgList
+List<Widget> imageSliders(List<dynamic> imageList)=> imageList
     .map(
       (item) => Container(
         margin: const EdgeInsets.all(5.0),

@@ -3,14 +3,14 @@
 import 'package:charity_app/utils/colors.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../widgets/common/action_button_2.dart';
 import '../widgets/home/single_fundraiser_slider.dart';
-import '../widgets/home/slider.dart';
 
 class ViewSingleFundraiserScreen extends StatefulWidget {
-  const ViewSingleFundraiserScreen({super.key});
+  final record;
+  const ViewSingleFundraiserScreen(this.record, {super.key});
 
   @override
   State<ViewSingleFundraiserScreen> createState() =>
@@ -26,7 +26,7 @@ class _ViewSingleFundraiserScreenState
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-
+    //widget.record["name"]
     return Scaffold(
       appBar: AppBar(
         elevation: 2,
@@ -41,7 +41,7 @@ class _ViewSingleFundraiserScreenState
           ),
         ),
         title: Text(
-          'Fundraiser',
+          "Fund Raiser",
           style: GoogleFonts.urbanist(
             fontSize: 24,
             fontWeight: FontWeight.w600,
@@ -93,7 +93,7 @@ class _ViewSingleFundraiserScreenState
             children: [
               Container(
                 transform: Matrix4.translationValues(0.0, 0.0, 0.0),
-                child: const SingleFundraisersSlider(),
+                child: SingleFundraisersSlider(widget.record["images"]),
               ),
               const SizedBox(height: 12),
               IntrinsicHeight(
@@ -101,7 +101,7 @@ class _ViewSingleFundraiserScreenState
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Fundraising Nme',
+                      widget.record['title'],
                       textAlign: TextAlign.start,
                       style: GoogleFonts.urbanist(
                         fontSize: 20,
@@ -109,7 +109,8 @@ class _ViewSingleFundraiserScreenState
                       ),
                     ),
                     Text(
-                      'Posted Date',
+                      //  'Posted on: ${widget.record["posteddat"]}',
+                      'Posted on:',
                       textAlign: TextAlign.start,
                       style: GoogleFonts.urbanist(
                           fontSize: 12,
@@ -136,7 +137,7 @@ class _ViewSingleFundraiserScreenState
                   // ignore: prefer_const_constructors
                   child: LinearProgressIndicator(
                     // value: (raisedAmount / goal),
-                    value: (50000 / 100000),
+                    value: (1000 / 1212),
                     color: primaryColor,
                     backgroundColor: progressBackgroundColor,
                     minHeight: 5.2,
@@ -148,8 +149,8 @@ class _ViewSingleFundraiserScreenState
                 padding: EdgeInsets.only(left: 0.0, top: 0.0),
                 child: RichText(
                   text: TextSpan(
-                    // text: "\$${raisedAmount.toInt()}",
-                    text: "100",
+                    // text: widget.record["ExpectedAmmount"].toString(),
+                    text: "119",
                     style: GoogleFonts.urbanist(
                       color: primaryColor,
                       fontSize: 14,
@@ -165,7 +166,8 @@ class _ViewSingleFundraiserScreenState
                       ),
                       TextSpan(
                         // text: "\$${goal.toInt()}",
-                        text: "10000",
+                        //text:widget.record["ExpectedAmmount"].toString(),
+                        text: widget.record['goal'].toString(),
                         style: GoogleFonts.urbanist(
                           color: primaryColor,
                           fontWeight: FontWeight.w700,
@@ -198,7 +200,7 @@ class _ViewSingleFundraiserScreenState
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
                   children: [
                     Text(
-                      'Fund Raiser:',
+                      'Fund Raiser: ${widget.record["recipientName"]}',
                       textAlign: TextAlign.start,
                       style: GoogleFonts.urbanist(
                           fontSize: 15,
@@ -206,7 +208,8 @@ class _ViewSingleFundraiserScreenState
                           color: Color.fromARGB(255, 0, 0, 0)),
                     ),
                     Text(
-                      'Raising For:',
+                      // 'Raising For: ${widget.record["FundRaisingFor"]}',
+                      'Raising For: ',
                       textAlign: TextAlign.start,
                       style: GoogleFonts.urbanist(
                           fontSize: 15,
@@ -214,7 +217,7 @@ class _ViewSingleFundraiserScreenState
                           color: Color.fromARGB(255, 0, 0, 0)),
                     ),
                     Text(
-                      'Category:',
+                      'Category: ${widget.record["category"]}',
                       textAlign: TextAlign.start,
                       style: GoogleFonts.urbanist(
                           fontSize: 15,
@@ -274,7 +277,7 @@ class _ViewSingleFundraiserScreenState
               Column(
                 children: [
                   Text(
-                    "DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription",
+                    widget.record["story"],
                     style: GoogleFonts.urbanist(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -341,8 +344,10 @@ class _ViewSingleFundraiserScreenState
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Donor Name"),
-                            Text(" Donated Ammount"),
+                            // Text(widget.record["Donations"][0]["Name"]),
+                            // Text(widget.record["Donations"][0]["Donated"].toString()),
+                            Text("sdsad"),
+                            Text("aaa"),
                           ],
                         ),
                       ),
@@ -360,8 +365,10 @@ class _ViewSingleFundraiserScreenState
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Donor Name"),
-                            Text(" Donated Ammount"),
+                            //   Text(widget.record["Donations"][1]["Name"]),
+                            // Text(widget.record["Donations"][1]["Donated"].toString()),
+                            Text("sadsa"),
+                            Text("Asa"),
                           ],
                         ),
                       ),
