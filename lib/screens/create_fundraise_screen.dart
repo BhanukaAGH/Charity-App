@@ -1,6 +1,6 @@
 import 'package:charity_app/models/user.dart';
 import 'package:charity_app/providers/user_provider.dart';
-import 'package:charity_app/resources/firestore_methods.dart';
+import 'package:charity_app/resources/fundraiser_methods.dart';
 import 'package:charity_app/utils/colors.dart';
 import 'package:charity_app/utils/utils.dart';
 import 'package:charity_app/widgets/common/form_field_date.dart';
@@ -180,7 +180,7 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
 
     bool isDraft = type == 'submit' ? false : true;
     try {
-      String res = await FirestoreMethods().createFundraise(
+      String res = await FundraiserMethods().createFundraise(
         uid: uid,
         title: _titleController.text,
         category: fundraiseCategory,

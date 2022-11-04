@@ -4,7 +4,7 @@ import 'package:charity_app/resources/storage_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
-class FirestoreMethods {
+class FundraiserMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   //! Create Fundraise
@@ -54,4 +54,7 @@ class FirestoreMethods {
     }
     return res;
   }
+
+  //! Get Fundraisers by User ID
+
 }
