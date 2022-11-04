@@ -1,3 +1,6 @@
+import 'package:charity_app/models/user.dart';
+import 'package:charity_app/providers/user_provider.dart';
+import 'package:charity_app/resources/firestore_methods.dart';
 import 'package:charity_app/utils/colors.dart';
 import 'package:charity_app/utils/utils.dart';
 import 'package:charity_app/widgets/common/form_field_date.dart';
@@ -8,6 +11,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class CreateFundraiseScreen extends StatefulWidget {
   const CreateFundraiseScreen({super.key});
@@ -35,6 +39,7 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
   bool termChecked = false;
   bool isCoverImageError = false;
   bool? isAgreeTerms;
+  bool _isLoading = false;
 
   void _selectImage(BuildContext context, int position) async {
     return showDialog(
@@ -128,7 +133,17 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
     );
   }
 
-  void _saveData({required String type}) async {
+  void clearImage() {
+    setState(() {
+      coverimage = null;
+      image1 = null;
+      image2 = null;
+      image3 = null;
+      image4 = null;
+    });
+  }
+
+  void _saveData({required String type, required String uid}) async {
     // Validate if submit form
     if (type == 'submit') {
       final isFundraiseFormValid = _fundraiseFormKey.currentState!.validate();
@@ -157,10 +172,60 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
     }
 
     // Save Logic
+    setState(() {
+      _isLoading = true;
+    });
+
+    bool isDraft = type == 'submit' ? false : true;
+    try {
+      String res = await FirestoreMethods().createFundraise(
+        uid: uid,
+        title: _titleController.text,
+        category: fundraiseCategory!,
+        goal: double.parse(_goalController.text),
+        expireDate: DateTime.parse(_dateController.text),
+        story: _storyController.text,
+        images: [coverimage, image1, image2, image3, image4],
+        recipientName: _nameController.text,
+        recipientPhone: _phoneController.text,
+        recipientEmail: _emailController.text,
+        isDraft: isDraft,
+      );
+
+      print(res);
+
+      if (res == 'success') {
+        setState(() {
+          _isLoading = false;
+        });
+        showSnackBar('posted!', context);
+        clearImage();
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        showSnackBar(res, context);
+      }
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _titleController.dispose();
+    _goalController.dispose();
+    _dateController.dispose();
+    _storyController.dispose();
+    _nameController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final User user = Provider.of<UserProvider>(context).getUser;
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -396,7 +461,7 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: OutlinedButton.icon(
-                    onPressed: () => _saveData(type: 'draft'),
+                    onPressed: () => _saveData(type: 'draft', uid: user.uid),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(
                         color: primaryColor,
@@ -433,7 +498,7 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
                       borderRadius: BorderRadius.circular(24),
                     ),
                   ),
-                  onPressed: () => _saveData(type: 'submit'),
+                  onPressed: () => _saveData(type: 'submit', uid: user.uid),
                   child: Text(
                     'Create & Submit',
                     style: GoogleFonts.urbanist(

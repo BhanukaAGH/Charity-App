@@ -10,6 +10,7 @@ class FormFieldInput extends StatelessWidget {
   final TextInputType textInputType;
   final Icon? suffixIcon;
   final int maxLines;
+  final String? initialValue;
 
   const FormFieldInput({
     super.key,
@@ -18,6 +19,7 @@ class FormFieldInput extends StatelessWidget {
     required this.hintText,
     required this.withAsterisk,
     required this.textInputType,
+    this.initialValue,
     this.suffixIcon,
     this.maxLines = 1,
   });
@@ -50,6 +52,7 @@ class FormFieldInput extends StatelessWidget {
           const SizedBox(height: 4),
           TextFormField(
             controller: controller,
+            initialValue: initialValue,
             maxLines: maxLines,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.symmetric(

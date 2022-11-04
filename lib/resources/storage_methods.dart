@@ -9,20 +9,26 @@ class StorageMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // adding image to firebase storage
-  Future<String> uploadImageToStorage(
-      String childName, Uint8List file, bool isPost) async {
+  Future<List<String>> uploadImageToStorage(
+      String childName, List<Uint8List?> files, bool isFundraise) async {
     Reference ref =
         _storage.ref().child(childName).child(_auth.currentUser!.uid);
 
-    if (isPost) {
+    if (isFundraise) {
       String id = const Uuid().v1();
       ref = ref.child(id);
     }
 
-    UploadTask uploadTask = ref.putData(file);
+    List<String> imageUrls = [];
+    for (var file in files) {
+      if (file == null) continue;
+      UploadTask uploadTask = ref.putData(file);
 
-    TaskSnapshot snap = await uploadTask;
-    String downloadUrl = await snap.ref.getDownloadURL();
-    return downloadUrl;
+      TaskSnapshot snap = await uploadTask;
+      String downloadUrl = await snap.ref.getDownloadURL();
+      imageUrls.add(downloadUrl);
+    }
+
+    return imageUrls;
   }
 }
