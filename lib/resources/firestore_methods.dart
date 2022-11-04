@@ -23,10 +23,10 @@ class FirestoreMethods {
   }) async {
     String res = 'some error occured';
     try {
-      List<String> imageUrls = await StorageMethods()
-          .uploadImageToStorage('fundraises', images, true);
-
       String fundraiseId = const Uuid().v1();
+
+      List<String> imageUrls = await StorageMethods().uploadImages('fundraises',
+          images.where((element) => element != null).toList(), fundraiseId);
 
       Fundraise fundraise = Fundraise(
         fundraiseId: fundraiseId,

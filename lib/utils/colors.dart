@@ -10,3 +10,4 @@ const progressBackgroundColor = Color.fromRGBO(217, 217, 217, 1);
 const greyTextColor = Color.fromRGBO(139, 147, 157, 1);
 const messageColor = Color.fromRGBO(245, 246, 249, 1);
 const imageInputBorderColor = Color.fromRGBO(212, 214, 217, 1);
+const disabledButtonColor = Color.fromRGBO(155, 106, 222, 0.5);

@@ -6,7 +6,7 @@ class FormFieldDropDown extends StatelessWidget {
   final String label;
   final String hintText;
   final bool withAsterisk;
-  final String? selectValue;
+  final String selectValue;
   final Function(String?) onChanged;
 
   const FormFieldDropDown({
@@ -48,7 +48,7 @@ class FormFieldDropDown extends StatelessWidget {
             child: ButtonTheme(
               alignedDropdown: true,
               child: DropdownButtonFormField(
-                value: selectValue,
+                value: selectValue.isEmpty ? selectValue : null,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.only(right: 12),
                   hintText: '   $hintText',

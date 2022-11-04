@@ -9,6 +9,7 @@ import 'package:charity_app/widgets/common/form_field_input.dart';
 import 'package:charity_app/widgets/create_fundraise/image_input.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -35,10 +36,9 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
   Uint8List? image2;
   Uint8List? image3;
   Uint8List? image4;
-  String? fundraiseCategory;
+  String fundraiseCategory = 'All';
   bool termChecked = false;
   bool isCoverImageError = false;
-  bool? isAgreeTerms;
   bool _isLoading = false;
 
   void _selectImage(BuildContext context, int position) async {
@@ -158,17 +158,19 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
         });
       }
 
-      if (isAgreeTerms != true) {
-        setState(() {
-          isAgreeTerms = false;
-        });
-      }
-
-      if (!isFundraiseFormValid ||
-          !isRecipientFormValid ||
-          isAgreeTerms != true) {
+      if (!isFundraiseFormValid || !isRecipientFormValid || isCoverImageError) {
         return;
       }
+    }
+
+    if (_titleController.text.isEmpty &&
+        _goalController.text.isEmpty &&
+        _dateController.text.isEmpty &&
+        _storyController.text.isEmpty &&
+        _nameController.text.isEmpty &&
+        _phoneController.text.isEmpty &&
+        _emailController.text.isEmpty) {
+      return;
     }
 
     // Save Logic
@@ -181,9 +183,13 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
       String res = await FirestoreMethods().createFundraise(
         uid: uid,
         title: _titleController.text,
-        category: fundraiseCategory!,
-        goal: double.parse(_goalController.text),
-        expireDate: DateTime.parse(_dateController.text),
+        category: fundraiseCategory,
+        goal: _goalController.text.isEmpty
+            ? 0
+            : double.parse(_goalController.text),
+        expireDate: _dateController.text.isEmpty
+            ? DateTime.now()
+            : DateTime.parse(_dateController.text),
         story: _storyController.text,
         images: [coverimage, image1, image2, image3, image4],
         recipientName: _nameController.text,
@@ -192,19 +198,36 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
         isDraft: isDraft,
       );
 
-      print(res);
-
       if (res == 'success') {
         setState(() {
           _isLoading = false;
         });
-        showSnackBar('posted!', context);
+        if (!isDraft) {
+          showAlertDialog(
+            context: context,
+            continueText: 'See Fundraising',
+            cancelText: 'Cancel',
+            description: 'Your fundraising proposal has been published',
+            title: 'Submit Successful!',
+            continueFunc: () {},
+          );
+        } else {
+          Fluttertoast.showToast(
+            msg: 'Save Fundraise',
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+          );
+        }
         clearImage();
       } else {
         setState(() {
           _isLoading = false;
         });
-        showSnackBar(res, context);
+        Fluttertoast.showToast(
+          msg: res,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+        );
       }
     } catch (e) {
       showSnackBar(e.toString(), context);
@@ -288,7 +311,7 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
                       selectImage: () => _selectImage(context, 3),
                     ),
                     ImageInput(
-                      imageFile: image3,
+                      imageFile: image4,
                       width: size.width / 5.2,
                       selectImage: () => _selectImage(context, 4),
                     ),
@@ -417,7 +440,6 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
                       title: Text(
                         "By checking this, you agree to the term & conditions that apply to us.",
                         style: GoogleFonts.urbanist(
-                          color: isAgreeTerms == false ? Colors.red : null,
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                         ),
@@ -426,9 +448,6 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
                       onChanged: (newValue) {
                         setState(() {
                           termChecked = newValue!;
-                          if (termChecked) {
-                            isAgreeTerms = true;
-                          }
                         });
                       },
                       controlAffinity: ListTileControlAffinity.leading,
@@ -458,55 +477,66 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: OutlinedButton.icon(
-                    onPressed: () => _saveData(type: 'draft', uid: user.uid),
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                        color: primaryColor,
-                        width: 2,
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        side: const BorderSide(
-                          color: primaryColor,
+                _isLoading
+                    ? const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        child: CircularProgressIndicator(),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: OutlinedButton.icon(
+                          onPressed: () =>
+                              _saveData(type: 'draft', uid: user.uid),
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                              color: primaryColor,
+                              width: 2,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24),
+                              side: const BorderSide(
+                                color: primaryColor,
+                              ),
+                            ),
+                          ),
+                          icon: const Icon(
+                            Icons.save,
+                            color: primaryColor,
+                            size: 20,
+                          ),
+                          label: Text(
+                            'Save',
+                            style: GoogleFonts.urbanist(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    icon: const Icon(
-                      Icons.save,
-                      color: primaryColor,
-                    ),
-                    label: Text(
-                      'Save',
-                      style: GoogleFonts.urbanist(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                if (!_isLoading)
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      backgroundColor: primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
                       ),
+                      disabledBackgroundColor: disabledButtonColor,
+                    ),
+                    onPressed: termChecked
+                        ? () => _saveData(type: 'submit', uid: user.uid)
+                        : null,
+                    child: Text(
+                      'Create & Submit',
+                      style: GoogleFonts.urbanist(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white),
                     ),
                   ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    backgroundColor: primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                  ),
-                  onPressed: () => _saveData(type: 'submit', uid: user.uid),
-                  child: Text(
-                    'Create & Submit',
-                    style: GoogleFonts.urbanist(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white),
-                  ),
-                ),
               ],
             ),
           ),
