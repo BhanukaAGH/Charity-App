@@ -9,6 +9,7 @@ class FormFieldInput extends StatelessWidget {
   final bool withAsterisk;
   final TextInputType textInputType;
   final Icon? suffixIcon;
+  final int maxLines;
 
   const FormFieldInput({
     super.key,
@@ -18,6 +19,7 @@ class FormFieldInput extends StatelessWidget {
     required this.withAsterisk,
     required this.textInputType,
     this.suffixIcon,
+    this.maxLines = 1,
   });
 
   @override
@@ -48,16 +50,29 @@ class FormFieldInput extends StatelessWidget {
           const SizedBox(height: 4),
           TextFormField(
             controller: controller,
+            maxLines: maxLines,
             decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(
+              contentPadding: EdgeInsets.symmetric(
                 horizontal: 12,
-                vertical: 0,
+                vertical: maxLines > 1 ? 12 : 0,
               ),
               hintText: hintText,
               hintStyle: GoogleFonts.urbanist(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
                 color: imageInputBorderColor,
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.red,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              border: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: progressBackgroundColor,
+                ),
+                borderRadius: BorderRadius.circular(12),
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: const BorderSide(

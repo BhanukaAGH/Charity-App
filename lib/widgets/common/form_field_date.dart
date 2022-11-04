@@ -68,6 +68,18 @@ class _FormFieldDateInputState extends State<FormFieldDateInput> {
                 fontWeight: FontWeight.w500,
                 color: imageInputBorderColor,
               ),
+              errorBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.red,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              border: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: progressBackgroundColor,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
               enabledBorder: OutlineInputBorder(
                 borderSide: const BorderSide(
                   color: progressBackgroundColor,
@@ -84,6 +96,12 @@ class _FormFieldDateInputState extends State<FormFieldDateInput> {
               suffixIcon: const Icon(Icons.date_range),
             ),
             textInputAction: TextInputAction.next,
+            validator: (value) {
+              if (widget.withAsterisk && value!.isEmpty) {
+                return 'Please enter a ${widget.hintText}.';
+              }
+              return null;
+            },
             onTap: () async {
               DateTime? pickedDate = await showDatePicker(
                 context: context,

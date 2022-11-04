@@ -2,24 +2,21 @@ import 'package:charity_app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class FormFieldDropDown extends StatefulWidget {
+class FormFieldDropDown extends StatelessWidget {
   final String label;
   final String hintText;
   final bool withAsterisk;
+  final String? selectValue;
+  final Function(String?) onChanged;
 
   const FormFieldDropDown({
     super.key,
     required this.label,
     required this.hintText,
     required this.withAsterisk,
+    required this.selectValue,
+    required this.onChanged,
   });
-
-  @override
-  State<FormFieldDropDown> createState() => _FormFieldDropDownState();
-}
-
-class _FormFieldDropDownState extends State<FormFieldDropDown> {
-  String? _selectValue;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +27,7 @@ class _FormFieldDropDownState extends State<FormFieldDropDown> {
         children: [
           RichText(
             text: TextSpan(
-              text: widget.label,
+              text: label,
               style: GoogleFonts.urbanist(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -38,7 +35,7 @@ class _FormFieldDropDownState extends State<FormFieldDropDown> {
               ),
               children: [
                 TextSpan(
-                  text: widget.withAsterisk ? ' *' : '',
+                  text: withAsterisk ? ' *' : '',
                   style: const TextStyle(
                     color: Colors.red,
                   ),
@@ -51,16 +48,28 @@ class _FormFieldDropDownState extends State<FormFieldDropDown> {
             child: ButtonTheme(
               alignedDropdown: true,
               child: DropdownButtonFormField(
-                value: _selectValue,
+                value: selectValue,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.only(right: 12),
-                  hintText: '   ${widget.hintText}',
+                  hintText: '   $hintText',
                   hintStyle: GoogleFonts.urbanist(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                     color: imageInputBorderColor,
                   ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: Colors.red,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: progressBackgroundColor,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  border: OutlineInputBorder(
                     borderSide: const BorderSide(
                       color: progressBackgroundColor,
                     ),
@@ -88,10 +97,12 @@ class _FormFieldDropDownState extends State<FormFieldDropDown> {
                       ),
                     )
                     .toList(),
-                onChanged: (String? value) {
-                  setState(() {
-                    _selectValue = value!;
-                  });
+                onChanged: onChanged,
+                validator: (value) {
+                  if (withAsterisk && value == null) {
+                    return 'Please enter a $hintText.';
+                  }
+                  return null;
                 },
               ),
             ),
