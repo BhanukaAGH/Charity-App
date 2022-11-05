@@ -1,10 +1,14 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:charity_app/utils/colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../resources/firestore_methods.dart';
+import '../utils/utils.dart';
 import '../widgets/common/action_button_2.dart';
 import '../widgets/home/single_fundraiser_slider.dart';
 
@@ -22,9 +26,116 @@ class _ViewSingleFundraiserScreenState
   String _alreadySaved = 'unsave';
   String _opencontact = 'close';
   String _descseemore = 'notexpand';
+  bool _isLoading = false;
+
+  var _Dataman = [];
+  bool isLoading = false;
+  @override
+  void initState() {
+    super.initState();
+    print("[[[[[[[]]]]]]]]]]]]]]here229");
+    check();
+  }
+
+  //  fundraiseId: widget.record['fundraiseId'],
+  // uid: FirebaseAuth.instance.currentUser!.uid,
+  check() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      CollectionReference _collectionRef =
+          FirebaseFirestore.instance.collection('savedfundraisers');
+
+      QuerySnapshot querySnapshot = await _collectionRef
+          .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+          .where('fundraiseId', isEqualTo: widget.record['fundraiseId'])
+          .get();
+      _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
+      if (_Dataman.length == 0) {
+        print("not saved");
+        setState(() {
+          _alreadySaved = "unsave";
+        });
+      } else {
+        print("saved");
+        setState(() {
+          _alreadySaved = "save";
+        });
+      }
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  save(id) async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      String res = await FirestoreMethods().savedFundraise(
+        fundraiseId: id,
+        uid: FirebaseAuth.instance.currentUser!.uid,
+      );
+
+      print(res);
+
+      if (res == 'success') {
+        setState(() {
+          _isLoading = false;
+        });
+        showSnackBar('Saved!', context);
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        showSnackBar(res, context);
+      }
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  unsave(id) async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      String res = await FirestoreMethods().unsavedFundraise(
+        fundraiseId: id,
+      );
+
+      print(res);
+
+      if (res == 'success') {
+        setState(() {
+          _isLoading = false;
+        });
+        showSnackBar('UnSaved!', context);
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        showSnackBar(res, context);
+      }
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    // print(']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]');
+    // print(widget.record["fundraiseId"]);
     var size = MediaQuery.of(context).size;
     //widget.record["name"]
     return Scaffold(
@@ -67,10 +178,12 @@ class _ViewSingleFundraiserScreenState
                 setState(() {
                   _alreadySaved = "save";
                 });
+                save(widget.record["fundraiseId"]);
               } else {
                 setState(() {
                   _alreadySaved = "unsave";
                 });
+                unsave(widget.record["fundraiseId"]);
               }
             },
             icons: (_alreadySaved == "save"
