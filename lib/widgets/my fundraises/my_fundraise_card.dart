@@ -1,17 +1,64 @@
+import 'dart:io';
+
+import 'package:charity_app/resources/fundraiser_methods.dart';
 import 'package:charity_app/screens/edit_fundraise_screen.dart';
 import 'package:charity_app/screens/view_result_screen.dart';
 import 'package:charity_app/utils/colors.dart';
 import 'package:charity_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:http/http.dart' as http;
 
-class MyFundraiseCard extends StatelessWidget {
+class MyFundraiseCard extends StatefulWidget {
   final snap;
 
   const MyFundraiseCard({
     super.key,
     required this.snap,
   });
+
+  @override
+  State<MyFundraiseCard> createState() => _MyFundraiseCardState();
+}
+
+class _MyFundraiseCardState extends State<MyFundraiseCard> {
+  double raisedAmount = 0;
+  int donationsCount = 0;
+  @override
+  initState() {
+    super.initState();
+    _calcDonations();
+  }
+
+  _calcDonations() async {
+    final donations = await FundraiserMethods()
+        .getFundraiseDonations(widget.snap['fundraiseId']);
+
+    for (var donate in donations) {
+      raisedAmount += donate['ammount'];
+    }
+
+    setState(() {
+      raisedAmount;
+      donationsCount = donations.length;
+    });
+  }
+
+  _sharePost() async {
+    final uri = Uri.parse(widget.snap['images'][0]);
+    final response = await http.get(uri);
+    final bytes = response.bodyBytes;
+    final temp = await getTemporaryDirectory();
+    final path = '${temp.path}/image.jpg';
+    File(path).writeAsBytesSync(bytes);
+    await Share.shareXFiles(
+      [XFile(path)],
+      text: 'Help to raise Funds - ${widget.snap['title']}',
+      subject: widget.snap['story'],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +106,7 @@ class MyFundraiseCard extends StatelessWidget {
                           child: AspectRatio(
                             aspectRatio: 1,
                             child: Image.network(
-                              snap['images'][0],
+                              widget.snap['images'][0],
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -95,7 +142,7 @@ class MyFundraiseCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            snap['title'],
+                            widget.snap['title'],
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             textAlign: TextAlign.left,
@@ -109,7 +156,7 @@ class MyFundraiseCard extends StatelessWidget {
                             padding: const EdgeInsets.only(top: 6),
                             child: RichText(
                               text: TextSpan(
-                                text: "\$${1000.toInt()}",
+                                text: "\$${raisedAmount.toInt()}",
                                 style: GoogleFonts.urbanist(
                                   color: primaryColor,
                                   fontSize: 14,
@@ -124,7 +171,7 @@ class MyFundraiseCard extends StatelessWidget {
                                     ),
                                   ),
                                   TextSpan(
-                                    text: "\$${snap['goal'].toInt()}",
+                                    text: "\$${widget.snap['goal'].toInt()}",
                                     style: GoogleFonts.urbanist(
                                       color: primaryColor,
                                       fontWeight: FontWeight.w700,
@@ -141,7 +188,7 @@ class MyFundraiseCard extends StatelessWidget {
                                 Radius.circular(12),
                               ),
                               child: LinearProgressIndicator(
-                                value: (1000 / snap['goal']),
+                                value: (raisedAmount / widget.snap['goal']),
                                 color: primaryColor,
                                 backgroundColor: progressBackgroundColor,
                                 minHeight: 5.2,
@@ -155,7 +202,7 @@ class MyFundraiseCard extends StatelessWidget {
                               children: [
                                 RichText(
                                   text: TextSpan(
-                                    text: "10",
+                                    text: '$donationsCount',
                                     style: GoogleFonts.urbanist(
                                       color: primaryColor,
                                       fontSize: 14,
@@ -175,7 +222,7 @@ class MyFundraiseCard extends StatelessWidget {
                                 RichText(
                                   text: TextSpan(
                                     text:
-                                        "${daysBetween(DateTime.now(), snap['expireDate'].toDate())}",
+                                        "${daysBetween(DateTime.now(), widget.snap['expireDate'].toDate())}",
                                     style: GoogleFonts.urbanist(
                                       color: primaryColor,
                                       fontSize: 14,
@@ -213,7 +260,8 @@ class MyFundraiseCard extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => EditFundraiseScreen(snap: snap),
+                        builder: (context) =>
+                            EditFundraiseScreen(snap: widget.snap),
                       ),
                     );
                   },
@@ -237,7 +285,7 @@ class MyFundraiseCard extends StatelessWidget {
                   ),
                 ),
                 TextButton.icon(
-                  onPressed: () {},
+                  onPressed: _sharePost,
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     minimumSize: const Size(50, 30),
@@ -266,7 +314,11 @@ class MyFundraiseCard extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const ViewResultScreen(),
+                          builder: (context) => ViewResultScreen(
+                            snap: widget.snap,
+                            raisedAmount: raisedAmount,
+                            donationsCount: donationsCount,
+                          ),
                         ),
                       );
                     },

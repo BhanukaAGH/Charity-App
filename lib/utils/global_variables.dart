@@ -21,3 +21,9 @@ enum FundraiseType {
   teams,
   charity,
 }
+
+extension ParseToString on FundraiseType {
+  String toShortString() {
+    return toString().split('.').last;
+  }
+}

@@ -50,8 +50,6 @@ class FirestoreMethods {
       _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
 
       _Dataman.map((e) => SavedID = e['savedID']).toList();
-      // print("[[[[[[[]]]]]]]]]]]]]]");
-      // print(SavedID);
 
       _collectionRef..doc(SavedID).delete();
 
@@ -61,36 +59,4 @@ class FirestoreMethods {
     }
     return res;
   }
-
-  // //check if fundraiser is already saved
-  // //UnSave Fundraiser method
-  // Future<String> isFundraiseSaved({
-  //   required String fundraiseId,
-  //   required String uid,
-  // }) async {
-  //   String res = 'some error occured';
-  //   String response = 'aa';
-
-  //   try {
-  //     print("[[[[[[[]]]]]]]]]]]]]]fundid");
-  //     print(fundraiseId);
-  //     CollectionReference _collectionRef =
-  //         FirebaseFirestore.instance.collection('savedfundraisers');
-
-  //     QuerySnapshot querySnapshot = await _collectionRef
-  //         .where('uid',isEqualTo:uid )
-  //         .where('fundraiseId', isEqualTo: fundraiseId)
-  //         .get();
-  //     _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
-  //     print("[[[[[[[]]]]]]]]]]]]]]here1");
-  //     print(_Dataman);
-
-  //     //_collectionRef..doc(SavedID).delete();
-
-  //     res = 'success';
-  //   } catch (err) {
-  //     res = err.toString();
-  //   }
-  //   return res;
-  // }
 }

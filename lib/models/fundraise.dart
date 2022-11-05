@@ -1,4 +1,3 @@
-import 'package:charity_app/utils/global_variables.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Fundraise {
@@ -15,7 +14,7 @@ class Fundraise {
   final String recipientPhone;
   final String recipientEmail;
   final bool isDraft;
-  final FundraiseType fundraiseType;
+  final String fundraiseType;
 
   Fundraise({
     required this.fundraiseId,

@@ -1,5 +1,3 @@
-import 'package:charity_app/widgets/home/fundraiser_card.dart';
-import 'package:charity_app/widgets/home/slider.dart';
 import 'package:flutter/material.dart';
 
 class NotificationScreen extends StatelessWidget {

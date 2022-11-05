@@ -48,7 +48,7 @@ class FormFieldDropDown extends StatelessWidget {
             child: ButtonTheme(
               alignedDropdown: true,
               child: DropdownButtonFormField(
-                value: selectValue.isEmpty ? selectValue : null,
+                value: selectValue == 'All' ? null : selectValue,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.only(right: 12),
                   hintText: '   $hintText',

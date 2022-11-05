@@ -1,3 +1,5 @@
+import 'package:charity_app/resources/fundraiser_methods.dart';
+import 'package:charity_app/screens/root_screen.dart';
 import 'package:charity_app/utils/colors.dart';
 import 'package:charity_app/utils/utils.dart';
 import 'package:charity_app/widgets/common/action_button.dart';
@@ -7,8 +9,11 @@ import 'package:charity_app/widgets/common/form_field_input.dart';
 import 'package:charity_app/widgets/create_fundraise/image_input.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class EditFundraiseScreen extends StatefulWidget {
   final snap;
@@ -35,25 +40,172 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
   Uint8List? image3;
   Uint8List? image4;
   String fundraiseCategory = 'All';
-  bool termChecked = false;
   bool isCoverImageError = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     imgList = widget.snap['images'];
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setInitialImages();
+    });
     fundraiseCategory = widget.snap['category'];
     _titleController = TextEditingController(text: widget.snap['title']);
     _goalController =
         TextEditingController(text: widget.snap['goal'].toString());
-    _dateController =
-        TextEditingController(text: widget.snap['expireDate'].toString());
+    _dateController = TextEditingController(
+        text: DateFormat('yyyy-MM-dd')
+            .format(widget.snap['expireDate'].toDate()));
     _storyController = TextEditingController(text: widget.snap['story']);
     _nameController = TextEditingController(text: widget.snap['recipientName']);
     _phoneController =
         TextEditingController(text: widget.snap['recipientPhone']);
     _emailController =
         TextEditingController(text: widget.snap['recipientEmail']);
+  }
+
+  setInitialImages() async {
+    http.Response coverRes =
+        await http.get(Uri.parse(widget.snap['images'][0]));
+    setState(() {
+      coverimage = coverRes.bodyBytes;
+    });
+    http.Response image1Res;
+    http.Response image2Res;
+    http.Response image3Res;
+    http.Response image4Res;
+    if (imgList.length >= 2) {
+      image1Res = await http.get(Uri.parse(widget.snap['images'][1]));
+      setState(() {
+        image1 = image1Res.bodyBytes;
+      });
+    }
+    if (imgList.length >= 3) {
+      image2Res = await http.get(Uri.parse(widget.snap['images'][2]));
+      setState(() {
+        image2 = image2Res.bodyBytes;
+      });
+    }
+    if (imgList.length >= 4) {
+      image3Res = await http.get(Uri.parse(widget.snap['images'][3]));
+      setState(() {
+        image3 = image3Res.bodyBytes;
+      });
+    }
+    if (imgList.length >= 5) {
+      image4Res = await http.get(Uri.parse(widget.snap['images'][4]));
+      setState(() {
+        image4 = image4Res.bodyBytes;
+      });
+    }
+  }
+
+//! Update Fundraise
+  void _updateData() async {
+    final isFundraiseFormValid = _fundraiseFormKey.currentState!.validate();
+    final isRecipientFormValid = _recipientFormKey.currentState!.validate();
+    if (coverimage == null) {
+      setState(() {
+        isCoverImageError = true;
+      });
+    } else {
+      setState(() {
+        isCoverImageError = false;
+      });
+    }
+
+    if (!isFundraiseFormValid || !isRecipientFormValid || isCoverImageError) {
+      return;
+    }
+
+    // Update Logic
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      String res = await FundraiserMethods().updateFundraise(
+        fundraiseId: widget.snap['fundraiseId'],
+        uid: widget.snap['uid'],
+        title: _titleController.text,
+        category: fundraiseCategory,
+        goal: _goalController.text.isEmpty
+            ? 0
+            : double.parse(_goalController.text),
+        expireDate: DateTime.parse(_dateController.text),
+        publishDate: widget.snap['publishDate'].toDate(),
+        story: _storyController.text,
+        images: [coverimage, image1, image2, image3, image4],
+        recipientName: _nameController.text,
+        recipientPhone: _phoneController.text,
+        recipientEmail: _emailController.text,
+        isDraft: widget.snap['isDraft'],
+        fundraiseType: widget.snap['fundraiseType'],
+      );
+
+      if (res == 'success') {
+        setState(() {
+          _isLoading = false;
+        });
+
+        showAlertDialog(
+          context: context,
+          continueText: 'See Fundraising',
+          cancelText: 'Cancel',
+          description: 'Your fundraising proposal has been published',
+          title: 'Submit Successful!',
+          continueFunc: () {},
+        );
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        Fluttertoast.showToast(
+          msg: res,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+        );
+      }
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    }
+  }
+
+//! Delete Fundraise
+  void deleteFundraise() async {
+    try {
+      final navigator = Navigator.of(context);
+      showAlertDialog(
+        context: context,
+        continueText: 'Yes, Unpublish',
+        cancelText: 'Cancel',
+        description: 'After you stop this publication, you cannot republish it',
+        confirmText: 'Are you sure?',
+        title: 'Stop Publishing Fundraise',
+        continueFunc: () async {
+          String res = await FundraiserMethods()
+              .deleteFundraise(widget.snap['fundraiseId']);
+
+          if (res == 'success') {
+            navigator.pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (context) => const RootScreen(),
+              ),
+              (route) => false,
+            );
+          } else {
+            Fluttertoast.showToast(
+              msg: res,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+            );
+          }
+        },
+      );
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    }
   }
 
   void _selectImage(BuildContext context, int position) async {
@@ -148,16 +300,6 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
     );
   }
 
-  void clearImage() {
-    setState(() {
-      coverimage = null;
-      image1 = null;
-      image2 = null;
-      image3 = null;
-      image4 = null;
-    });
-  }
-
   @override
   void dispose() {
     super.dispose();
@@ -199,7 +341,7 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
         centerTitle: true,
         actions: [
           ActionButton(
-            onPressed: () {},
+            onPressed: deleteFundraise,
             icons: Icons.delete_forever,
             iconColor: redIconColor,
             lightColor: lightRedColor,
@@ -216,7 +358,6 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ImageInput(
-                imgUrl: imgList[0],
                 imageFile: coverimage,
                 width: size.width,
                 inputType: 'cover',
@@ -229,25 +370,21 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ImageInput(
-                      imgUrl: imgList.length >= 2 ? imgList[1] : null,
                       imageFile: image1,
                       width: size.width / 5.2,
                       selectImage: () => _selectImage(context, 1),
                     ),
                     ImageInput(
-                      imgUrl: imgList.length >= 3 ? imgList[2] : null,
                       imageFile: image2,
                       width: size.width / 5.2,
                       selectImage: () => _selectImage(context, 2),
                     ),
                     ImageInput(
-                      imgUrl: imgList.length >= 4 ? imgList[3] : null,
                       imageFile: image3,
                       width: size.width / 5.2,
                       selectImage: () => _selectImage(context, 3),
                     ),
                     ImageInput(
-                      imgUrl: imgList.length >= 5 ? imgList[4] : null,
                       imageFile: image4,
                       width: size.width / 5.2,
                       selectImage: () => _selectImage(context, 4),
@@ -369,26 +506,6 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
                         Icons.alternate_email,
                       ),
                     ),
-                    CheckboxListTile(
-                      contentPadding: EdgeInsets.zero,
-                      checkColor: Colors.white,
-                      activeColor: primaryColor,
-                      dense: true,
-                      title: Text(
-                        "By checking this, you agree to the term & conditions that apply to us.",
-                        style: GoogleFonts.urbanist(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      value: termChecked,
-                      onChanged: (newValue) {
-                        setState(() {
-                          termChecked = newValue!;
-                        });
-                      },
-                      controlAffinity: ListTileControlAffinity.leading,
-                    ),
                   ],
                 ),
               ),
@@ -411,61 +528,37 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
                 color: borderColor,
               ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: OutlinedButton.icon(
-                    onPressed: () {},
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                        color: primaryColor,
-                        width: 2,
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        side: const BorderSide(
-                          color: primaryColor,
-                        ),
-                      ),
-                    ),
-                    icon: const Icon(
-                      Icons.save,
-                      color: primaryColor,
-                      size: 20,
-                    ),
-                    label: Text(
-                      'Save',
-                      style: GoogleFonts.urbanist(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-                ElevatedButton(
+            child: SizedBox(
+              width: size.width * 0.9,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
+                child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 24, vertical: _isLoading ? 4 : 12),
                     backgroundColor: primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
                     ),
                     disabledBackgroundColor: disabledButtonColor,
                   ),
-                  onPressed: () {},
-                  child: Text(
-                    'Create & Submit',
-                    style: GoogleFonts.urbanist(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white),
-                  ),
+                  onPressed: _updateData,
+                  child: _isLoading
+                      ? const CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        )
+                      : Text(
+                          'Update & Submit',
+                          style: GoogleFonts.urbanist(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
                 ),
-              ],
+              ),
             ),
           ),
         ),

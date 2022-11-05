@@ -1,5 +1,4 @@
 import 'package:charity_app/providers/user_provider.dart';
-import 'package:charity_app/utils/utils.dart';
 import 'package:charity_app/widgets/my%20fundraises/my_fundraise_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';

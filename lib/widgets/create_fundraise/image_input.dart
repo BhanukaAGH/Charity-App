@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 class ImageInput extends StatelessWidget {
   final Uint8List? imageFile;
-  final String? imgUrl;
   final double width;
   final String? inputType;
   final VoidCallback selectImage;
@@ -14,7 +13,6 @@ class ImageInput extends StatelessWidget {
 
   const ImageInput({
     super.key,
-    this.imgUrl,
     required this.imageFile,
     required this.width,
     required this.selectImage,
@@ -51,39 +49,30 @@ class ImageInput extends StatelessWidget {
                       ),
                     ),
                   )
-                : imgUrl != null
-                    ? Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(imgUrl!),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      )
-                    : RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          text: '+',
-                          style: GoogleFonts.urbanist(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
-                            color: isError && imageFile == null
-                                ? Colors.red
-                                : primaryColor,
-                          ),
-                          children: [
-                            if (inputType == 'cover')
-                              TextSpan(
-                                text: '\nAdd Cover Photos',
-                                style: GoogleFonts.urbanist(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: paginationColor,
-                                ),
-                              ),
-                          ],
-                        ),
+                : RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      text: '+',
+                      style: GoogleFonts.urbanist(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        color: isError && imageFile == null
+                            ? Colors.red
+                            : primaryColor,
                       ),
+                      children: [
+                        if (inputType == 'cover')
+                          TextSpan(
+                            text: '\nAdd Cover Photos',
+                            style: GoogleFonts.urbanist(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: paginationColor,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
           ),
         ),
       ),
