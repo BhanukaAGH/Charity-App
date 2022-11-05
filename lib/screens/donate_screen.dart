@@ -5,27 +5,19 @@ import 'package:charity_app/utils/colors.dart';
 import 'package:charity_app/widgets/common/form_field_input.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../resources/firestore_methods.dart';
 import '../utils/utils.dart';
-import '../widgets/common/action_button_2.dart';
-import '../widgets/home/single_fundraiser_slider.dart';
 
 class DonateScreen extends StatefulWidget {
   final record;
   const DonateScreen(this.record, {super.key});
 
   @override
-  State<DonateScreen> createState() =>
-      _DonateScreenState();
+  State<DonateScreen> createState() => _DonateScreenState();
 }
 
-class _DonateScreenState
-    extends State<DonateScreen> {
-  
+class _DonateScreenState extends State<DonateScreen> {
   String _alreadyDonated = 'donate';
   String _opencontact = 'close';
   String _descseemore = 'notexpand';
@@ -39,6 +31,7 @@ class _DonateScreenState
     super.initState();
     check();
   }
+
 //donate
   donate(_ammountController) async {
     setState(() {
@@ -47,11 +40,10 @@ class _DonateScreenState
     try {
       String res = await DonationMethods().createDonation(
         fundraiseId: widget.record['fundraiseId'],
-        uid: FirebaseAuth.instance.currentUser!.uid, 
+        uid: FirebaseAuth.instance.currentUser!.uid,
         ammount: double.parse(_ammountController.text),
       );
 
-      print(res);
       if (res == 'success') {
         setState(() {
           _isLoading = false;
@@ -71,9 +63,10 @@ class _DonateScreenState
       isLoading = false;
     });
   }
+
   //check if donated
-    check() async {
-        setState(() {
+  check() async {
+    setState(() {
       isLoading = true;
     });
     try {
@@ -86,12 +79,10 @@ class _DonateScreenState
           .get();
       _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
       if (_Dataman.length == 0) {
-        print("not donated");
         setState(() {
           _alreadyDonated = "donate";
         });
       } else {
-        print("donated");
         setState(() {
           _alreadyDonated = "donated";
         });
@@ -107,7 +98,7 @@ class _DonateScreenState
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    //widget.record["name"]
+
     return Scaffold(
       appBar: AppBar(
         elevation: 2,
@@ -164,7 +155,7 @@ class _DonateScreenState
                   fontWeight: FontWeight.w700,
                 ),
               ),
-               Text(
+              Text(
                 'Our Goal is ${widget.record["goal"]} Rs',
                 textAlign: TextAlign.start,
                 style: GoogleFonts.urbanist(
@@ -215,12 +206,17 @@ class _DonateScreenState
                               style: ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 120.0, vertical: 10),
-                                backgroundColor:_alreadyDonated=="donate"?Color.fromRGBO(243, 153, 116, 1):Color.fromARGB(255, 21, 127, 0),
+                                backgroundColor: _alreadyDonated == "donate"
+                                    ? Color.fromRGBO(243, 153, 116, 1)
+                                    : Color.fromARGB(255, 21, 127, 0),
                               ),
                               onPressed: () {
                                 donate(_ammountController);
                               },
-                              child: Text(_alreadyDonated=="donate"?'Donate':'Donated',
+                              child: Text(
+                                _alreadyDonated == "donate"
+                                    ? 'Donate'
+                                    : 'Donated',
                                 style: GoogleFonts.urbanist(
                                     fontSize: 20,
                                     fontWeight: FontWeight.w600,

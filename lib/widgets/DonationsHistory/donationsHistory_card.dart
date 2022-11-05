@@ -1,6 +1,6 @@
-import 'package:charity_app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:charity_app/utils/colors.dart';
 
 class DonationHistoryCard extends StatelessWidget {
   final String imageUrl;

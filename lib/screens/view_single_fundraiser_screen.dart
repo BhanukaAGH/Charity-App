@@ -1,11 +1,8 @@
 // ignore_for_file: prefer_const_constructors
-
-import 'package:charity_app/resources/donation_methods.dart';
 import 'package:charity_app/screens/donate_screen.dart';
 import 'package:charity_app/utils/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -36,13 +33,10 @@ class _ViewSingleFundraiserScreenState
   @override
   void initState() {
     super.initState();
-    print("[[[[[[[]]]]]]]]]]]]]]here229");
     check();
     checkifdonated();
   }
 
-  //  fundraiseId: widget.record['fundraiseId'],
-  // uid: FirebaseAuth.instance.currentUser!.uid,
   check() async {
     setState(() {
       isLoading = true;
@@ -57,12 +51,10 @@ class _ViewSingleFundraiserScreenState
           .get();
       _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
       if (_Dataman.length == 0) {
-        print("not saved");
         setState(() {
           _alreadySaved = "unsave";
         });
       } else {
-        print("saved");
         setState(() {
           _alreadySaved = "save";
         });
@@ -90,12 +82,10 @@ class _ViewSingleFundraiserScreenState
           .get();
       _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
       if (_Dataman.length == 0) {
-        print("not donated");
         setState(() {
           _alreadyDonated = "donate";
         });
       } else {
-        print("donated");
         setState(() {
           _alreadyDonated = "donated";
         });
@@ -117,8 +107,6 @@ class _ViewSingleFundraiserScreenState
         fundraiseId: id,
         uid: FirebaseAuth.instance.currentUser!.uid,
       );
-
-      print(res);
 
       if (res == 'success') {
         setState(() {
@@ -148,8 +136,6 @@ class _ViewSingleFundraiserScreenState
       String res = await FirestoreMethods().unsavedFundraise(
         fundraiseId: id,
       );
-
-      print(res);
 
       if (res == 'success') {
         setState(() {
@@ -204,10 +190,8 @@ class _ViewSingleFundraiserScreenState
 
   @override
   Widget build(BuildContext context) {
-    // print(']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]');
-    // print(widget.record["fundraiseId"]);
     var size = MediaQuery.of(context).size;
-    //widget.record["name"]
+
     return Scaffold(
       appBar: AppBar(
         elevation: 2,
@@ -615,7 +599,9 @@ class _ViewSingleFundraiserScreenState
                               style: ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 120.0, vertical: 10),
-                                backgroundColor:_alreadyDonated=="donate"?Color.fromRGBO(243, 153, 116, 1):Color.fromARGB(255, 21, 127, 0),
+                                backgroundColor: _alreadyDonated == "donate"
+                                    ? Color.fromRGBO(243, 153, 116, 1)
+                                    : Color.fromARGB(255, 21, 127, 0),
                               ),
                               onPressed: () {
                                 //donate();
@@ -626,7 +612,10 @@ class _ViewSingleFundraiserScreenState
                                           DonateScreen(widget.record)),
                                 );
                               },
-                              child: Text(_alreadyDonated=="donate"?'Donate':'Donated',
+                              child: Text(
+                                _alreadyDonated == "donate"
+                                    ? 'Donate'
+                                    : 'Donated',
                                 style: GoogleFonts.urbanist(
                                     fontSize: 20,
                                     fontWeight: FontWeight.w600,

@@ -1,9 +1,7 @@
 import 'package:charity_app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../widgets/DonationsHistory/donation_history_tab.dart';
-import '../widgets/SavedFundraisers/saved_fundiser_list.dart';
 
 class DonationHistoryScreen extends StatefulWidget {
   const DonationHistoryScreen({super.key});

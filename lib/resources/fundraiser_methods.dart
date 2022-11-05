@@ -107,4 +107,21 @@ class FundraiserMethods {
     }
     return res;
   }
+
+//!Delete Fundraise
+  Future<String> deleteFundraise(String fundraiseId) async {
+    String res = 'some error occured';
+    try {
+      //  Delete Images
+
+      // Delete Donations
+
+      // Delete Fundraiser
+
+      res = 'success';
+    } catch (err) {
+      res = err.toString();
+    }
+    return res;
+  }
 }

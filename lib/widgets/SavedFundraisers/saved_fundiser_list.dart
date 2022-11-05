@@ -1,5 +1,4 @@
 import 'package:charity_app/widgets/SavedFundraisers/savedFundraiser_Card.dart';
-import 'package:charity_app/widgets/my%20fundraises/my_fundraise_card.dart';
 import 'package:flutter/cupertino.dart';
 
 class SavedFundraisersTab extends StatelessWidget {
