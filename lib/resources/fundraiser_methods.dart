@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:charity_app/models/fundraise.dart' as model;
 import 'package:charity_app/resources/storage_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:uuid/uuid.dart';
 
 class FundraiserMethods {
@@ -108,7 +109,7 @@ class FundraiserMethods {
     return res;
   }
 
-//!Delete Fundraise
+  //! Delete Fundraise
   Future<String> deleteFundraise(String fundraiseId) async {
     String res = 'some error occured';
     try {
@@ -130,5 +131,25 @@ class FundraiserMethods {
       res = err.toString();
     }
     return res;
+  }
+
+  //! Get Fundraiser Donations
+  Future<List<DocumentSnapshot>> getFundraiseDonations(
+      String fundraiseId) async {
+    List<DocumentSnapshot> donations = [];
+    try {
+      // Get Donations
+      final snapshot = await _firestore
+          .collection('donations')
+          .where('fundraiseId', isEqualTo: fundraiseId)
+          .get();
+
+      for (var doc in snapshot.docs) {
+        donations.add(doc);
+      }
+    } catch (err) {
+      err.toString();
+    }
+    return donations;
   }
 }

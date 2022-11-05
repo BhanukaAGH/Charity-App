@@ -1,12 +1,49 @@
 import 'package:charity_app/utils/colors.dart';
+import 'package:charity_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ViewResultScreen extends StatelessWidget {
-  const ViewResultScreen({super.key});
+  final snap;
+  final double raisedAmount;
+  final int donationsCount;
+
+  const ViewResultScreen({
+    super.key,
+    required this.snap,
+    required this.raisedAmount,
+    required this.donationsCount,
+  });
 
   @override
   Widget build(BuildContext context) {
+    List results = [
+      {
+        'name': 'Funds gained',
+        'value': '\$ ${raisedAmount.toInt()}',
+      },
+      {
+        'name': 'Funds left',
+        'value': '\$ ${(snap['goal'] - raisedAmount).toInt()}',
+      },
+      {
+        'name': 'Donators',
+        'value': '$donationsCount',
+      },
+      {
+        'name': 'Days left',
+        'value': '${daysBetween(DateTime.now(), snap['expireDate'].toDate())}',
+      },
+      {
+        'name': 'Funds reached',
+        'value': '${(raisedAmount / snap['goal'] * 100).toStringAsFixed(1)}%',
+      },
+      {
+        'name': 'Prayers',
+        'value': '1620',
+      },
+    ];
+
     return Scaffold(
       appBar: AppBar(
         elevation: 2,
@@ -58,7 +95,7 @@ class ViewResultScreen extends StatelessWidget {
                             child: AspectRatio(
                               aspectRatio: 1,
                               child: Image.network(
-                                'https://images.unsplash.com/photo-1467307983825-619715426c70?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1077&q=80',
+                                snap['images'][0],
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -94,7 +131,7 @@ class ViewResultScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Fundraise Title',
+                              snap['title'],
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               textAlign: TextAlign.left,
@@ -108,7 +145,7 @@ class ViewResultScreen extends StatelessWidget {
                               padding: const EdgeInsets.only(top: 6),
                               child: RichText(
                                 text: TextSpan(
-                                  text: "\$3200",
+                                  text: "\$${raisedAmount.toInt()}",
                                   style: GoogleFonts.urbanist(
                                     color: primaryColor,
                                     fontSize: 14,
@@ -123,7 +160,7 @@ class ViewResultScreen extends StatelessWidget {
                                       ),
                                     ),
                                     TextSpan(
-                                      text: "\$4800",
+                                      text: "\$${snap['goal'].toInt()}",
                                       style: GoogleFonts.urbanist(
                                         color: primaryColor,
                                         fontWeight: FontWeight.w700,
@@ -133,14 +170,14 @@ class ViewResultScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            const Padding(
-                              padding: EdgeInsets.only(top: 4),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4),
                               child: ClipRRect(
-                                borderRadius: BorderRadius.all(
+                                borderRadius: const BorderRadius.all(
                                   Radius.circular(12),
                                 ),
                                 child: LinearProgressIndicator(
-                                  value: 0.6,
+                                  value: (raisedAmount / snap['goal']),
                                   color: primaryColor,
                                   backgroundColor: progressBackgroundColor,
                                   minHeight: 5.2,
@@ -155,7 +192,7 @@ class ViewResultScreen extends StatelessWidget {
                                 children: [
                                   RichText(
                                     text: TextSpan(
-                                      text: "1240",
+                                      text: '$donationsCount',
                                       style: GoogleFonts.urbanist(
                                         color: primaryColor,
                                         fontSize: 14,
@@ -175,7 +212,8 @@ class ViewResultScreen extends StatelessWidget {
                                   ),
                                   RichText(
                                     text: TextSpan(
-                                      text: "10",
+                                      text:
+                                          "${daysBetween(DateTime.now(), snap['expireDate'].toDate())}",
                                       style: GoogleFonts.urbanist(
                                         color: primaryColor,
                                         fontSize: 14,
@@ -291,30 +329,3 @@ class ViewResultScreen extends StatelessWidget {
     );
   }
 }
-
-List results = [
-  {
-    'name': 'Funds gained',
-    'value': '\$ 3,200',
-  },
-  {
-    'name': 'Funds left',
-    'value': '\$ 1,600',
-  },
-  {
-    'name': 'Donators',
-    'value': '1240',
-  },
-  {
-    'name': 'Days left',
-    'value': '10',
-  },
-  {
-    'name': 'Funds reached',
-    'value': '84%',
-  },
-  {
-    'name': 'Prayers',
-    'value': '1620',
-  },
-];
