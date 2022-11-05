@@ -197,34 +197,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
   }
 }
-
-
-  // ElevatedButton(
-  //                 onPressed: () async {
-  //                   await AuthMethods().signOut();
-  //                   Navigator.of(context).pushReplacement(
-  //                     MaterialPageRoute(
-  //                       builder: (context) => const LoginScreen(),
-  //                     ),
-  //                   );
-  //                 },
-  //                 child: const Text('Sign Out'),
-  //               ),
-
-  // ListView(children: [
-  //                       ListTile(
-  //                         leading: Icon(Icons.call),
-  //                         title: Text('Map'),
-  //                         shape: Border(bottom: BorderSide()),
-  //                       ),
-  //                       ListTile(
-  //                         leading: Icon(Icons.call),
-  //                         title: Text('Map'),
-  //                         shape: Border(bottom: BorderSide()),
-  //                       ),
-  //                       ListTile(
-  //                         leading: Icon(Icons.call),
-  //                         title: Text('Map'),
-  //                         shape: Border(bottom: BorderSide()),
-  //                       ),
-  //                     ])
