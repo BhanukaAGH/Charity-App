@@ -10,8 +10,6 @@ class SearchResultsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("[[[[[[[[[[[[[[[[[[[[[[[[[[[[[");
-    print(data);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(12),
