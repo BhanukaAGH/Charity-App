@@ -2,7 +2,6 @@ import 'package:charity_app/models/user.dart';
 import 'package:charity_app/providers/user_provider.dart';
 import 'package:charity_app/resources/fundraiser_methods.dart';
 import 'package:charity_app/utils/colors.dart';
-import 'package:charity_app/utils/global_variables.dart';
 import 'package:charity_app/utils/utils.dart';
 import 'package:charity_app/widgets/common/form_field_date.dart';
 import 'package:charity_app/widgets/common/form_field_dropdown.dart';
@@ -16,7 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class CreateFundraiseScreen extends StatefulWidget {
-  final FundraiseType fundraiseType;
+  final String fundraiseType;
   const CreateFundraiseScreen({super.key, required this.fundraiseType});
 
   @override

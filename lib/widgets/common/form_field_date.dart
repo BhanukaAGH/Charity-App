@@ -23,12 +23,6 @@ class FormFieldDateInput extends StatefulWidget {
 
 class _FormFieldDateInputState extends State<FormFieldDateInput> {
   @override
-  void initState() {
-    widget.controller.text = "";
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),

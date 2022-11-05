@@ -138,20 +138,20 @@ List types = [
   {
     'image': 'assets/type1.png',
     'title': 'Yourself',
-    'type': FundraiseType.mySelf,
+    'type': FundraiseType.mySelf.toShortString(),
     'description': 'Funds are delivered to your bank account for your own use',
   },
   {
     'image': 'assets/type2.png',
     'title': 'Someone else',
-    'type': FundraiseType.teams,
+    'type': FundraiseType.teams.toShortString(),
     'description':
         'You’ll invite a beneficiary to receive funds or distribute them yourself',
   },
   {
     'image': 'assets/type3.png',
     'title': 'Charity',
-    'type': FundraiseType.charity,
+    'type': FundraiseType.charity.toShortString(),
     'description': 'Funds are delivered to your chosen nonprofit for you',
   },
 ];
