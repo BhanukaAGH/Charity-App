@@ -48,6 +48,7 @@ dependencies:
   dotted_border: ^2.0.0+3
   intl: ^0.17.0
   fluttertoast: ^8.1.1
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:

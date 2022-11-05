@@ -112,11 +112,18 @@ class FundraiserMethods {
   Future<String> deleteFundraise(String fundraiseId) async {
     String res = 'some error occured';
     try {
-      //  Delete Images
-
       // Delete Donations
+      QuerySnapshot donations = await _firestore
+          .collection('donations')
+          .where('fundraiseId', isEqualTo: fundraiseId)
+          .get();
+
+      for (var doc in donations.docs) {
+        doc.reference.delete();
+      }
 
       // Delete Fundraiser
+      await _firestore.collection('fundraisers').doc(fundraiseId).delete();
 
       res = 'success';
     } catch (err) {

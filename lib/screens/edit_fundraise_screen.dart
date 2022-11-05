@@ -1,4 +1,5 @@
 import 'package:charity_app/resources/fundraiser_methods.dart';
+import 'package:charity_app/screens/root_screen.dart';
 import 'package:charity_app/utils/colors.dart';
 import 'package:charity_app/utils/utils.dart';
 import 'package:charity_app/widgets/common/action_button.dart';
@@ -12,6 +13,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class EditFundraiseScreen extends StatefulWidget {
   final snap;
@@ -45,6 +47,9 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
   void initState() {
     super.initState();
     imgList = widget.snap['images'];
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setInitialImages();
+    });
     fundraiseCategory = widget.snap['category'];
     _titleController = TextEditingController(text: widget.snap['title']);
     _goalController =
@@ -60,7 +65,43 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
         TextEditingController(text: widget.snap['recipientEmail']);
   }
 
-//!Update Fundraise
+  setInitialImages() async {
+    http.Response coverRes =
+        await http.get(Uri.parse(widget.snap['images'][0]));
+    setState(() {
+      coverimage = coverRes.bodyBytes;
+    });
+    http.Response image1Res;
+    http.Response image2Res;
+    http.Response image3Res;
+    http.Response image4Res;
+    if (imgList.length >= 2) {
+      image1Res = await http.get(Uri.parse(widget.snap['images'][1]));
+      setState(() {
+        image1 = image1Res.bodyBytes;
+      });
+    }
+    if (imgList.length >= 3) {
+      image2Res = await http.get(Uri.parse(widget.snap['images'][2]));
+      setState(() {
+        image2 = image2Res.bodyBytes;
+      });
+    }
+    if (imgList.length >= 4) {
+      image3Res = await http.get(Uri.parse(widget.snap['images'][3]));
+      setState(() {
+        image3 = image3Res.bodyBytes;
+      });
+    }
+    if (imgList.length >= 5) {
+      image4Res = await http.get(Uri.parse(widget.snap['images'][4]));
+      setState(() {
+        image4 = image4Res.bodyBytes;
+      });
+    }
+  }
+
+//! Update Fundraise
   void _updateData() async {
     final isFundraiseFormValid = _fundraiseFormKey.currentState!.validate();
     final isRecipientFormValid = _recipientFormKey.currentState!.validate();
@@ -116,7 +157,6 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
           title: 'Submit Successful!',
           continueFunc: () {},
         );
-        clearImage();
       } else {
         setState(() {
           _isLoading = false;
@@ -127,6 +167,42 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
           textColor: Colors.white,
         );
       }
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    }
+  }
+
+//! Delete Fundraise
+  void deleteFundraise() async {
+    try {
+      final navigator = Navigator.of(context);
+      showAlertDialog(
+        context: context,
+        continueText: 'Yes, Unpublish',
+        cancelText: 'Cancel',
+        description: 'After you stop this publication, you cannot republish it',
+        confirmText: 'Are you sure?',
+        title: 'Stop Publishing Fundraise',
+        continueFunc: () async {
+          String res = await FundraiserMethods()
+              .deleteFundraise(widget.snap['fundraiseId']);
+
+          if (res == 'success') {
+            navigator.pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (context) => const RootScreen(),
+              ),
+              (route) => false,
+            );
+          } else {
+            Fluttertoast.showToast(
+              msg: res,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+            );
+          }
+        },
+      );
     } catch (e) {
       showSnackBar(e.toString(), context);
     }
@@ -224,16 +300,6 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
     );
   }
 
-  void clearImage() {
-    setState(() {
-      coverimage = null;
-      image1 = null;
-      image2 = null;
-      image3 = null;
-      image4 = null;
-    });
-  }
-
   @override
   void dispose() {
     super.dispose();
@@ -275,7 +341,7 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
         centerTitle: true,
         actions: [
           ActionButton(
-            onPressed: () {},
+            onPressed: deleteFundraise,
             icons: Icons.delete_forever,
             iconColor: redIconColor,
             lightColor: lightRedColor,
@@ -292,7 +358,6 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ImageInput(
-                imgUrl: imgList[0],
                 imageFile: coverimage,
                 width: size.width,
                 inputType: 'cover',
@@ -305,25 +370,21 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ImageInput(
-                      imgUrl: imgList.length >= 2 ? imgList[1] : null,
                       imageFile: image1,
                       width: size.width / 5.2,
                       selectImage: () => _selectImage(context, 1),
                     ),
                     ImageInput(
-                      imgUrl: imgList.length >= 3 ? imgList[2] : null,
                       imageFile: image2,
                       width: size.width / 5.2,
                       selectImage: () => _selectImage(context, 2),
                     ),
                     ImageInput(
-                      imgUrl: imgList.length >= 4 ? imgList[3] : null,
                       imageFile: image3,
                       width: size.width / 5.2,
                       selectImage: () => _selectImage(context, 3),
                     ),
                     ImageInput(
-                      imgUrl: imgList.length >= 5 ? imgList[4] : null,
                       imageFile: image4,
                       width: size.width / 5.2,
                       selectImage: () => _selectImage(context, 4),
@@ -474,8 +535,8 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 24, vertical: _isLoading ? 4 : 12),
                     backgroundColor: primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
@@ -483,14 +544,19 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
                     disabledBackgroundColor: disabledButtonColor,
                   ),
                   onPressed: _updateData,
-                  child: Text(
-                    'Update & Submit',
-                    style: GoogleFonts.urbanist(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
+                  child: _isLoading
+                      ? const CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        )
+                      : Text(
+                          'Update & Submit',
+                          style: GoogleFonts.urbanist(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
                 ),
               ),
             ),
