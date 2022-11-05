@@ -1,14 +1,15 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:charity_app/resources/donation_methods.dart';
 import 'package:charity_app/screens/donate_screen.dart';
 import 'package:charity_app/utils/colors.dart';
+import 'package:charity_app/widgets/Donations/recent_donations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../resources/firestore_methods.dart';
 import '../utils/utils.dart';
 import '../widgets/common/action_button_2.dart';
@@ -29,16 +30,21 @@ class _ViewSingleFundraiserScreenState
   String _alreadySaved = 'unsave';
   String _opencontact = 'close';
   String _descseemore = 'notexpand';
+  String posteddate = 'not added';
+  List<String> donors = ["empty"];
+  double raisedammount = 0;
   bool _isLoading = false;
 
   var _Dataman = [];
+  var _Datauser = [];
   bool isLoading = false;
   @override
   void initState() {
     super.initState();
-    print("[[[[[[[]]]]]]]]]]]]]]here229");
     check();
     checkifdonated();
+    raised();
+    recentDonation();
   }
 
   //  fundraiseId: widget.record['fundraiseId'],
@@ -47,6 +53,10 @@ class _ViewSingleFundraiserScreenState
     setState(() {
       isLoading = true;
     });
+
+    DateTime dateTime = widget.record['publishDate'].toDate();
+    final datentime = dateTime.toString();
+    posteddate = datentime.substring(0, datentime.length - 13);
     try {
       CollectionReference _collectionRef =
           FirebaseFirestore.instance.collection('savedfundraisers');
@@ -57,12 +67,12 @@ class _ViewSingleFundraiserScreenState
           .get();
       _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
       if (_Dataman.length == 0) {
-        print("not saved");
+        //print("not saved");
         setState(() {
           _alreadySaved = "unsave";
         });
       } else {
-        print("saved");
+        //print("saved");
         setState(() {
           _alreadySaved = "save";
         });
@@ -90,16 +100,57 @@ class _ViewSingleFundraiserScreenState
           .get();
       _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
       if (_Dataman.length == 0) {
-        print("not donated");
+        //print("not donated");
         setState(() {
           _alreadyDonated = "donate";
         });
       } else {
-        print("donated");
+        //print("donated");
         setState(() {
           _alreadyDonated = "donated";
         });
       }
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  //recent donation
+  recentDonation() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      CollectionReference _collectionRef =
+          FirebaseFirestore.instance.collection('donations');
+
+      CollectionReference _usercollectionRef =
+          FirebaseFirestore.instance.collection('users');
+
+      QuerySnapshot querySnapshot = await _collectionRef
+          .where('fundraiseId', isEqualTo: widget.record['fundraiseId'])
+          .get();
+      _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
+
+      List<String> data = [];
+      _Dataman.forEach((element) async {
+        final ammount;
+        final name;
+        ammount = element['ammount'];
+        QuerySnapshot querySnapshot = await _usercollectionRef
+            .where('uid', isEqualTo: widget.record['uid'])
+            .get();
+        _Datauser = querySnapshot.docs.map((doc) => doc.data()).toList();
+        final Name = _Datauser.map((e) => e['name']);
+        data.add('$Name Donated $ammount');
+        // print("datadatadatadata");
+        // print(data);
+        donors = data;
+      });
+      // print(_Dataman);
     } catch (e) {
       showSnackBar(e.toString(), context);
     }
@@ -118,7 +169,7 @@ class _ViewSingleFundraiserScreenState
         uid: FirebaseAuth.instance.currentUser!.uid,
       );
 
-      print(res);
+      // print(res);
 
       if (res == 'success') {
         setState(() {
@@ -139,6 +190,37 @@ class _ViewSingleFundraiserScreenState
     });
   }
 
+  //raised ammount
+  raised() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      double raised = 0;
+
+      CollectionReference _collectionRef =
+          FirebaseFirestore.instance.collection('donations');
+
+      QuerySnapshot querySnapshot = await _collectionRef
+          .where('fundraiseId', isEqualTo: widget.record['fundraiseId'])
+          .get();
+      _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
+      print(_Dataman);
+      // final data=_Dataman.map((e) => raised=raised+ e['ammount']);
+
+      _Dataman.forEach((element) {
+        raised = raised + element['ammount'];
+      });
+      raisedammount = raised;
+      // print(raisedammount);
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
 //unsave
   unsave(id) async {
     setState(() {
@@ -149,7 +231,7 @@ class _ViewSingleFundraiserScreenState
         fundraiseId: id,
       );
 
-      print(res);
+      // print(res);
 
       if (res == 'success') {
         setState(() {
@@ -232,6 +314,8 @@ class _ViewSingleFundraiserScreenState
         actions: [
           ActionButton2(
             onPressed: () {
+              // print("datadatadatadatadatadata");
+              // print(donors[0]);
               Fluttertoast.showToast(
                   msg: "Shared", // message
                   toastLength: Toast.LENGTH_SHORT, // length
@@ -303,8 +387,7 @@ class _ViewSingleFundraiserScreenState
                           ),
                         ),
                         Text(
-                          //  'Posted on: ${widget.record["posteddat"]}',
-                          'Posted on:',
+                          'Posted On: ${posteddate}',
                           textAlign: TextAlign.start,
                           style: GoogleFonts.urbanist(
                               fontSize: 12,
@@ -331,7 +414,7 @@ class _ViewSingleFundraiserScreenState
                       // ignore: prefer_const_constructors
                       child: LinearProgressIndicator(
                         // value: (raisedAmount / goal),
-                        value: (1000 / 1212),
+                        value: (raisedammount / widget.record['goal']),
                         color: primaryColor,
                         backgroundColor: progressBackgroundColor,
                         minHeight: 5.2,
@@ -344,7 +427,7 @@ class _ViewSingleFundraiserScreenState
                     child: RichText(
                       text: TextSpan(
                         // text: widget.record["ExpectedAmmount"].toString(),
-                        text: "119",
+                        text: raisedammount.toString(),
                         style: GoogleFonts.urbanist(
                           color: primaryColor,
                           fontSize: 14,
@@ -528,47 +611,27 @@ class _ViewSingleFundraiserScreenState
                     ),
                   ),
                   Container(
-                    decoration: BoxDecoration(
-                        border:
-                            Border.all(color: Color.fromARGB(255, 0, 0, 0))),
-                    padding: EdgeInsets.all(5.0),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          IntrinsicHeight(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                // Text(widget.record["Donations"][0]["Name"]),
-                                // Text(widget.record["Donations"][0]["Donated"].toString()),
-                                Text("sdsad"),
-                                Text("aaa"),
-                              ],
-                            ),
-                          ),
-                        ]),
-                  ),
-                  SizedBox(height: 6),
-                  Container(
-                    decoration: BoxDecoration(
-                        border:
-                            Border.all(color: Color.fromARGB(255, 0, 0, 0))),
-                    padding: EdgeInsets.all(5.0),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          IntrinsicHeight(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                //   Text(widget.record["Donations"][1]["Name"]),
-                                // Text(widget.record["Donations"][1]["Donated"].toString()),
-                                Text("sadsa"),
-                                Text("Asa"),
-                              ],
-                            ),
-                          ),
-                        ]),
+                    height: 100,
+                    child: StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('donations')
+                          .where('fundraiseId',
+                              isEqualTo: widget.record['fundraiseId'])
+                          .snapshots(),
+                      builder: (context,
+                          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                              snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return ListView.builder(
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (context, index) => RecentDonors(
+                                Snap: snapshot.data!.docs[index].data()));
+                      },
+                    ),
                   ),
                   Container(
                     padding: EdgeInsets.only(left: 10.0, top: 0.0),
@@ -615,7 +678,9 @@ class _ViewSingleFundraiserScreenState
                               style: ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 120.0, vertical: 10),
-                                backgroundColor:_alreadyDonated=="donate"?Color.fromRGBO(243, 153, 116, 1):Color.fromARGB(255, 21, 127, 0),
+                                backgroundColor: _alreadyDonated == "donate"
+                                    ? Color.fromRGBO(243, 153, 116, 1)
+                                    : Color.fromARGB(255, 21, 127, 0),
                               ),
                               onPressed: () {
                                 //donate();
@@ -626,7 +691,10 @@ class _ViewSingleFundraiserScreenState
                                           DonateScreen(widget.record)),
                                 );
                               },
-                              child: Text(_alreadyDonated=="donate"?'Donate':'Donated',
+                              child: Text(
+                                _alreadyDonated == "donate"
+                                    ? 'Donate'
+                                    : 'Donated',
                                 style: GoogleFonts.urbanist(
                                     fontSize: 20,
                                     fontWeight: FontWeight.w600,
