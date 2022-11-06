@@ -1,16 +1,15 @@
+import 'package:charity_app/resources/fundraiser_methods.dart';
 import 'package:charity_app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../screens/view_single_fundraiser_screen.dart';
 
-class FundraiserCard extends StatelessWidget {
+class FundraiserCard extends StatefulWidget {
   final String imageUrl;
   final String title;
   final data;
   final double goal;
-  final double raisedAmount;
-  final int donatorsCount;
   final int daysLeft;
 
   const FundraiserCard({
@@ -19,10 +18,35 @@ class FundraiserCard extends StatelessWidget {
     required this.title,
     required this.data,
     required this.goal,
-    required this.raisedAmount,
-    required this.donatorsCount,
     required this.daysLeft,
   });
+
+  @override
+  State<FundraiserCard> createState() => _FundraiserCardState();
+}
+
+class _FundraiserCardState extends State<FundraiserCard> {
+  double raisedAmount = 0;
+  int donationsCount = 0;
+  @override
+  initState() {
+    super.initState();
+    _calcDonations();
+  }
+
+  _calcDonations() async {
+    final donations = await FundraiserMethods()
+        .getFundraiseDonations(context, widget.data['fundraiseId']);
+
+    for (var donate in donations) {
+      raisedAmount += donate['ammount'];
+    }
+
+    setState(() {
+      raisedAmount;
+      donationsCount = donations.length;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +55,7 @@ class FundraiserCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ViewSingleFundraiserScreen(data),
+            builder: (context) => ViewSingleFundraiserScreen(widget.data),
           ),
         )
       },
@@ -57,7 +81,7 @@ class FundraiserCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    widget.title,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     textAlign: TextAlign.left,
@@ -86,7 +110,7 @@ class FundraiserCard extends StatelessWidget {
                             ),
                           ),
                           TextSpan(
-                            text: "\$${goal.toInt()}",
+                            text: "\$${widget.goal.toInt()}",
                             style: GoogleFonts.urbanist(
                               color: primaryColor,
                               fontWeight: FontWeight.w700,
@@ -103,7 +127,7 @@ class FundraiserCard extends StatelessWidget {
                         Radius.circular(12),
                       ),
                       child: LinearProgressIndicator(
-                        value: (raisedAmount / goal),
+                        value: (raisedAmount / widget.goal),
                         color: primaryColor,
                         backgroundColor: progressBackgroundColor,
                         minHeight: 5.2,
@@ -117,7 +141,7 @@ class FundraiserCard extends StatelessWidget {
                       children: [
                         RichText(
                           text: TextSpan(
-                            text: "$donatorsCount",
+                            text: "$donationsCount",
                             style: GoogleFonts.urbanist(
                               color: primaryColor,
                               fontSize: 14,
@@ -136,7 +160,7 @@ class FundraiserCard extends StatelessWidget {
                         ),
                         RichText(
                           text: TextSpan(
-                            text: "$daysLeft",
+                            text: "${widget.daysLeft}",
                             style: GoogleFonts.urbanist(
                               color: primaryColor,
                               fontSize: 14,
@@ -160,7 +184,7 @@ class FundraiserCard extends StatelessWidget {
               ),
             ),
             child: Image.network(
-              imageUrl,
+              widget.imageUrl,
               fit: BoxFit.cover,
             ),
           ),

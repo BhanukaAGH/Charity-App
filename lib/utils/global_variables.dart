@@ -16,6 +16,16 @@ List<Widget> homeScreenItems = [
   ProfileScreen(uid: FirebaseAuth.instance.currentUser!.uid),
 ];
 
+final List<String> categoryList = [
+  "Education",
+  "Medical",
+  "Emergencies",
+  "Environment",
+  "Sports",
+  "Bussiness",
+  "Family",
+];
+
 enum FundraiseType {
   mySelf,
   teams,

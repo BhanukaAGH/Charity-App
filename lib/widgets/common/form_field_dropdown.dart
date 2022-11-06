@@ -1,4 +1,5 @@
 import 'package:charity_app/utils/colors.dart';
+import 'package:charity_app/utils/global_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -83,7 +84,7 @@ class FormFieldDropDown extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                items: categories
+                items: categoryList
                     .map(
                       (e) => DropdownMenuItem<String>(
                         value: e,
@@ -112,5 +113,3 @@ class FormFieldDropDown extends StatelessWidget {
     );
   }
 }
-
-List categories = ['Education', 'Medical', 'Emergency'];

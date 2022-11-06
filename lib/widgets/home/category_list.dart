@@ -1,16 +1,10 @@
 import 'package:charity_app/utils/colors.dart';
+import 'package:charity_app/utils/global_variables.dart';
 import 'package:charity_app/widgets/home/fundraiser_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../utils/utils.dart';
-
-final List<String> categoryList = [
-  "Education",
-  "Medical",
-  "Emergencies",
-  "Environment",
-];
 
 class CategoryList extends StatefulWidget {
   const CategoryList({super.key});
@@ -21,33 +15,6 @@ class CategoryList extends StatefulWidget {
 
 class _CategoryListState extends State<CategoryList> {
   String _currentSelect = 'All';
-  var fundRaisers = {};
-  bool isLoading = false;
-  var _Dataman = [];
-
-  @override
-  void initState() {
-    super.initState();
-    getData();
-  }
-
-  getData() async {
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      CollectionReference _collectionRef =
-          FirebaseFirestore.instance.collection('fundraisers');
-
-      QuerySnapshot querySnapshot = await _collectionRef.get();
-      _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
-    } catch (e) {
-      showSnackBar(e.toString(), context);
-    }
-    setState(() {
-      isLoading = false;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,21 +91,47 @@ class _CategoryListState extends State<CategoryList> {
             ],
           ),
         ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(vertical: 2),
-          child: Row(
-            children: [
-              ..._Dataman.map((e) => FundraiserCard(
-                    data: e,
-                    imageUrl: e["images"][0],
-                    title: e['title'],
-                    goal: e['goal'],
-                    raisedAmount: 20,
-                    donatorsCount: 2,
-                    daysLeft: 10,
-                  )).toList(),
-            ],
+        SizedBox(
+          width: double.infinity,
+          height: 265,
+          child: StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('fundraisers')
+                .snapshots(),
+            builder: (context,
+                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              List<QueryDocumentSnapshot<Map<String, dynamic>>> filter;
+              filter = snapshot.data!.docs;
+              if (_currentSelect != 'All') {
+                filter = snapshot.data!.docs.where((element) {
+                  return element.data()['category'] == _currentSelect;
+                }).toList();
+              }
+
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                itemCount: filter.length,
+                itemBuilder: (context, index) {
+                  final data = filter[index].data();
+
+                  return FundraiserCard(
+                    data: data,
+                    imageUrl: data['images'][0],
+                    title: data['title'],
+                    goal: data['goal'],
+                    daysLeft: daysBetween(
+                        DateTime.now(), data['expireDate'].toDate()),
+                  );
+                },
+              );
+            },
           ),
         ),
       ],
