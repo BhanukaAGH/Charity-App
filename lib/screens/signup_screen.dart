@@ -2,9 +2,9 @@ import 'package:charity_app/resources/auth_methods.dart';
 import 'package:charity_app/screens/login_screen.dart';
 import 'package:charity_app/screens/root_screen.dart';
 import 'package:charity_app/utils/colors.dart';
-import 'package:charity_app/utils/utils.dart';
 import 'package:charity_app/widgets/common/text_field_input.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -15,25 +15,23 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPassController = TextEditingController();
   bool _isLoading = false;
 
-  @override
-  void dispose() {
-    super.dispose();
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPassController.dispose();
-  }
-
   void signUpUser() async {
+    final isFormValid = _formKey.currentState!.validate();
+    if (isFormValid == false) {
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
+    final navigator = Navigator.of(context);
     String res = await AuthMethods().signUpuser(
       name: _nameController.text,
       email: _emailController.text,
@@ -45,9 +43,10 @@ class _SignupScreenState extends State<SignupScreen> {
     });
 
     if (res != 'success') {
-      showSnackBar(res, context);
+      Fluttertoast.showToast(
+          msg: res, backgroundColor: Colors.red, textColor: Colors.white);
     } else {
-      Navigator.of(context).pushReplacement(
+      navigator.pushReplacement(
         MaterialPageRoute(
           builder: (context) => const RootScreen(),
         ),
@@ -64,6 +63,15 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPassController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -76,12 +84,12 @@ class _SignupScreenState extends State<SignupScreen> {
                 hasScrollBody: false,
                 child: Column(
                   children: [
-                    const SizedBox(height: 42),
+                    const Spacer(),
                     Image.asset(
                       'assets/logo.png',
                       height: 160,
                     ),
-                    const SizedBox(height: 42),
+                    const Spacer(flex: 2),
                     Text(
                       'Sign up for free',
                       style: GoogleFonts.urbanist(
@@ -90,31 +98,44 @@ class _SignupScreenState extends State<SignupScreen> {
                         letterSpacing: -0.1,
                       ),
                     ),
-                    const SizedBox(height: 32),
-                    TextFieldInput(
-                      textEditingController: _nameController,
-                      hintText: 'Enter your name',
-                      textInputType: TextInputType.text,
-                    ),
-                    const SizedBox(height: 18),
-                    TextFieldInput(
-                      textEditingController: _emailController,
-                      hintText: 'Enter your email',
-                      textInputType: TextInputType.emailAddress,
-                    ),
-                    const SizedBox(height: 18),
-                    TextFieldInput(
-                      textEditingController: _passwordController,
-                      hintText: 'Enter your password',
-                      textInputType: TextInputType.text,
-                      isPass: true,
-                    ),
-                    const SizedBox(height: 18),
-                    TextFieldInput(
-                      textEditingController: _confirmPassController,
-                      hintText: 'Enter confirm password',
-                      textInputType: TextInputType.text,
-                      isPass: true,
+                    const Spacer(),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          TextFieldInput(
+                            textEditingController: _nameController,
+                            label: 'Name',
+                            hintText: 'Enter your name',
+                            textInputType: TextInputType.text,
+                          ),
+                          const SizedBox(height: 12),
+                          TextFieldInput(
+                            textEditingController: _emailController,
+                            label: 'Email Address',
+                            hintText: 'Enter your email',
+                            textInputType: TextInputType.emailAddress,
+                            isEmail: true,
+                          ),
+                          const SizedBox(height: 12),
+                          TextFieldInput(
+                            textEditingController: _passwordController,
+                            label: 'Password',
+                            hintText: 'Enter your password',
+                            textInputType: TextInputType.text,
+                            isPass: true,
+                          ),
+                          const SizedBox(height: 12),
+                          TextFieldInput(
+                            textEditingController: _confirmPassController,
+                            label: 'Confirm Password',
+                            hintText: 'Enter confirm password',
+                            textInputType: TextInputType.text,
+                            isPass: true,
+                            isConfirmPass: _passwordController.text,
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 36),
                     InkWell(
