@@ -42,10 +42,12 @@ class _FundraiserCardState extends State<FundraiserCard> {
       raisedAmount += donate['ammount'];
     }
 
-    setState(() {
-      raisedAmount;
-      donationsCount = donations.length;
-    });
+    if (mounted) {
+      setState(() {
+        raisedAmount;
+        donationsCount = donations.length;
+      });
+    }
   }
 
   @override

@@ -1,5 +1,4 @@
 import 'package:charity_app/utils/colors.dart';
-import 'package:charity_app/utils/global_variables.dart';
 import 'package:charity_app/widgets/home/fundraiser_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +14,31 @@ class CategoryList extends StatefulWidget {
 
 class _CategoryListState extends State<CategoryList> {
   String _currentSelect = 'All';
+  var categories = Set();
+
+  @override
+  void initState() {
+    super.initState();
+    _getCategories();
+  }
+
+  _getCategories() async {
+    final data =
+        await FirebaseFirestore.instance.collection('fundraisers').get();
+
+    for (var element in data.docs) {
+      categories.add(element['category']);
+    }
+
+    setState(() {
+      categories;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -52,7 +72,7 @@ class _CategoryListState extends State<CategoryList> {
                 ),
               ),
               const SizedBox(width: 6.0),
-              ...categoryList
+              ...categories
                   .map(
                     (category) => Padding(
                       padding: const EdgeInsets.only(right: 6.0),
