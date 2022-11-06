@@ -101,6 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             hintText: 'Enter your email',
                             textInputType: TextInputType.emailAddress,
                             isEmail: true,
+                            textInputAction: TextInputAction.next,
                           ),
                           const SizedBox(height: 18),
                           TextFieldInput(
@@ -109,6 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             hintText: 'Enter your password',
                             textInputType: TextInputType.text,
                             isPass: true,
+                            textInputAction: TextInputAction.done,
                           ),
                         ],
                       ),

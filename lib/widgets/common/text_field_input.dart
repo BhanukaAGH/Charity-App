@@ -10,6 +10,7 @@ class TextFieldInput extends StatelessWidget {
   final TextInputType textInputType;
   final bool isEmail;
   final String isConfirmPass;
+  final TextInputAction? textInputAction;
 
   const TextFieldInput({
     Key? key,
@@ -20,6 +21,7 @@ class TextFieldInput extends StatelessWidget {
     required this.label,
     this.isEmail = false,
     this.isConfirmPass = '',
+    this.textInputAction,
   }) : super(key: key);
 
   @override
@@ -62,6 +64,7 @@ class TextFieldInput extends StatelessWidget {
           ),
           keyboardType: textInputType,
           obscureText: isPass,
+          textInputAction: textInputAction,
           validator: (value) {
             if (value!.isEmpty) {
               return 'Please enter value';

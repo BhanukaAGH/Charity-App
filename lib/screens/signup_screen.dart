@@ -108,6 +108,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             label: 'Name',
                             hintText: 'Enter your name',
                             textInputType: TextInputType.text,
+                            textInputAction: TextInputAction.next,
                           ),
                           const SizedBox(height: 12),
                           TextFieldInput(
@@ -116,6 +117,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             hintText: 'Enter your email',
                             textInputType: TextInputType.emailAddress,
                             isEmail: true,
+                            textInputAction: TextInputAction.next,
                           ),
                           const SizedBox(height: 12),
                           TextFieldInput(
@@ -124,6 +126,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             hintText: 'Enter your password',
                             textInputType: TextInputType.text,
                             isPass: true,
+                            textInputAction: TextInputAction.next,
                           ),
                           const SizedBox(height: 12),
                           TextFieldInput(
@@ -133,6 +136,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             textInputType: TextInputType.text,
                             isPass: true,
                             isConfirmPass: _passwordController.text,
+                            textInputAction: TextInputAction.done,
                           ),
                         ],
                       ),
