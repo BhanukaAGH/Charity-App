@@ -18,7 +18,6 @@ class _SavedFundraiserState extends State<SavedFundraiserScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: secondaryColor,
-        toolbarHeight: 80,
         leading: IconButton(
           tooltip: 'Back',
           onPressed: () {
@@ -39,8 +38,7 @@ class _SavedFundraiserState extends State<SavedFundraiserScreen> {
         ),
         centerTitle: true,
       ),
-      body:
-          SavedFundraisersTab(),
+      body: SavedFundraisersTab(),
     );
   }
 }
