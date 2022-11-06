@@ -1,19 +1,46 @@
 import 'package:charity_app/screens/chat_screen.dart';
 import 'package:charity_app/utils/colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class DonateTile extends StatelessWidget {
-  final String imgUrl;
-  final String name;
-  final double price;
+class DonateTile extends StatefulWidget {
+  final String uid;
+  final double amount;
 
   const DonateTile({
     super.key,
-    required this.imgUrl,
-    required this.name,
-    required this.price,
+    required this.uid,
+    required this.amount,
   });
+
+  @override
+  State<DonateTile> createState() => _DonateTileState();
+}
+
+class _DonateTileState extends State<DonateTile> {
+  String? imgUrl;
+  String name = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserDetails();
+  }
+
+  _getUserDetails() async {
+    DocumentSnapshot snap = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.uid)
+        .get();
+
+    final userData = snap.data() as Map<String, dynamic>;
+
+    setState(() {
+      imgUrl = userData['photoUrl'];
+      name = userData['name'];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +59,15 @@ class DonateTile extends StatelessWidget {
           ),
         ),
         selected: true,
-        leading: CircleAvatar(
-          maxRadius: 24,
-          backgroundColor: borderColor,
-          backgroundImage: NetworkImage(
-            imgUrl,
-          ),
-        ),
+        leading: imgUrl != null
+            ? CircleAvatar(
+                maxRadius: 24,
+                backgroundColor: borderColor,
+                backgroundImage: NetworkImage(
+                  imgUrl!,
+                ),
+              )
+            : null,
         title: RichText(
           text: TextSpan(
             text: name,
@@ -57,7 +86,7 @@ class DonateTile extends StatelessWidget {
                 ),
               ),
               TextSpan(
-                text: '\$${price.toInt()}',
+                text: '\$${widget.amount.toInt()}',
                 style: GoogleFonts.urbanist(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -73,9 +102,9 @@ class DonateTile extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => ChatScreen(
-                  imgUrl: imgUrl,
+                  imgUrl: imgUrl!,
                   name: name,
-                  price: price,
+                  price: widget.amount,
                 ),
               ),
             );

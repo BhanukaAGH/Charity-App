@@ -1,11 +1,15 @@
 import 'dart:typed_data';
 import 'package:charity_app/models/fundraise.dart' as model;
+import 'package:charity_app/providers/user_provider.dart';
 import 'package:charity_app/resources/storage_methods.dart';
+import 'package:charity_app/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:uuid/uuid.dart';
 
 class FundraiserMethods {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   //! Create Fundraise
@@ -135,7 +139,9 @@ class FundraiserMethods {
 
   //! Get Fundraiser Donations
   Future<List<DocumentSnapshot>> getFundraiseDonations(
-      String fundraiseId) async {
+    BuildContext context,
+    String fundraiseId,
+  ) async {
     List<DocumentSnapshot> donations = [];
     try {
       // Get Donations
@@ -148,8 +154,27 @@ class FundraiserMethods {
         donations.add(doc);
       }
     } catch (err) {
-      err.toString();
+      showSnackBar(err.toString(), context);
     }
     return donations;
+  }
+
+  //! Get My Fundraisers
+  Future<List<DocumentSnapshot>> getMyFundraises(BuildContext context) async {
+    List<DocumentSnapshot> fundraisers = [];
+    try {
+      // Get Donations
+      final snapshot = await _firestore
+          .collection('fundraisers')
+          .where('uid', isEqualTo: _auth.currentUser!.uid)
+          .get();
+
+      for (var doc in snapshot.docs) {
+        fundraisers.add(doc);
+      }
+    } catch (err) {
+      showSnackBar(err.toString(), context);
+    }
+    return fundraisers;
   }
 }

@@ -34,7 +34,7 @@ class _MyFundraiseCardState extends State<MyFundraiseCard> {
 
   _calcDonations() async {
     final donations = await FundraiserMethods()
-        .getFundraiseDonations(widget.snap['fundraiseId']);
+        .getFundraiseDonations(context, widget.snap['fundraiseId']);
 
     for (var donate in donations) {
       raisedAmount += donate['ammount'];
