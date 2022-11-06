@@ -8,24 +8,15 @@ import '../../screens/view_single_fundraiser_screen.dart';
 class FundraiserSearchCard extends StatefulWidget {
   final String imageUrl;
   final data;
-  // final save;
   final String title;
   final double goal;
-  // final double raisedAmount;
-  // final int donatorsCount;
-  // final int daysLeft;
 
-  ///
   const FundraiserSearchCard({
     super.key,
     required this.imageUrl,
-    // required this.save,
     required this.data,
     required this.title,
     required this.goal,
-    // required this.raisedAmount,
-    // required this.donatorsCount,
-    // required this.daysLeft,
   });
 
   @override
@@ -51,10 +42,6 @@ class _FundraiserSearchCardState extends State<FundraiserSearchCard> {
       _isLoading = true;
     });
     var raised = 0.0;
-    // var collection = FirebaseFirestore.instance.collection('donations');
-    // var docSnapshot = await collection
-    //     .where('fundraiseId', isEqualTo: widget.Snap['fundraiseId'])
-    //     .get();
     CollectionReference _collectionRef =
         FirebaseFirestore.instance.collection('donations');
     QuerySnapshot querySnapshot = await _collectionRef
@@ -69,12 +56,12 @@ class _FundraiserSearchCardState extends State<FundraiserSearchCard> {
       raised = raised + element['ammount'];
     });
 
-    print(raised);
     raisedammount = raised;
-    // print(raisedammount);
-    setState(() {
-      _isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -83,7 +70,7 @@ class _FundraiserSearchCardState extends State<FundraiserSearchCard> {
     return _isLoading
         ? const Padding(
             padding: EdgeInsets.symmetric(vertical: 12),
-            child: CircularProgressIndicator(),
+            child: LinearProgressIndicator(),
           )
         : GestureDetector(
             onTap: () => {
@@ -95,9 +82,9 @@ class _FundraiserSearchCardState extends State<FundraiserSearchCard> {
               )
             },
             child: Container(
-              width: 520,
+              width: double.infinity,
               height: 250,
-              padding: const EdgeInsets.only(right: 4),
+              padding: const EdgeInsets.only(right: 4, bottom: 6),
               child: Card(
                 elevation: 3,
                 clipBehavior: Clip.hardEdge,
@@ -268,12 +255,6 @@ class _FundraiserSearchCardState extends State<FundraiserSearchCard> {
                       ),
                     ],
                   ),
-                  // Container(
-                  //     padding: const EdgeInsets.symmetric(vertical: 0),
-                  //     child: Image.network(
-                  //       imageUrl,
-                  //       fit: BoxFit.cover,
-                  //     ))
                 ),
               ),
             ),

@@ -39,11 +39,12 @@ class _MyFundraiseCardState extends State<MyFundraiseCard> {
     for (var donate in donations) {
       raisedAmount += donate['ammount'];
     }
-
-    setState(() {
-      raisedAmount;
-      donationsCount = donations.length;
-    });
+    if (mounted) {
+      setState(() {
+        raisedAmount;
+        donationsCount = donations.length;
+      });
+    }
   }
 
   _sharePost() async {
