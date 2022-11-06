@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/savefundraise.dart';
@@ -42,7 +43,10 @@ class FirestoreMethods {
       CollectionReference _collectionRef =
           FirebaseFirestore.instance.collection('savedfundraisers');
 
-      QuerySnapshot querySnapshot = await _collectionRef.get();
+      QuerySnapshot querySnapshot = await _collectionRef
+      .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+      .where('fundraiseId', isEqualTo: fundraiseId)
+      .get();
       _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
 
       _Dataman.map((e) => SavedID = e['savedID']).toList();

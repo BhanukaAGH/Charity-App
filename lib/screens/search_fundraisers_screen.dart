@@ -17,6 +17,7 @@ class SearchFundraisesScreen extends StatefulWidget {
 }
 
 class _SearchFundraisesState extends State<SearchFundraisesScreen> {
+  final TextEditingController _controller = TextEditingController();
   var _Dataman = [];
   bool isLoading = false;
   @override
@@ -29,12 +30,18 @@ class _SearchFundraisesState extends State<SearchFundraisesScreen> {
     setState(() {
       isLoading = true;
     });
+    // print('[[][][][][][');
+    // print(_controller.text.length);
     try {
-      CollectionReference _collectionRef =
-          FirebaseFirestore.instance.collection('fundraisers');
+      if (_controller.text.length == 0) {
+        CollectionReference _collectionRef =
+            FirebaseFirestore.instance.collection('fundraisers');
 
-      QuerySnapshot querySnapshot = await _collectionRef.get();
-      _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
+        QuerySnapshot querySnapshot = await _collectionRef.get();
+        _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
+      }else{
+
+      }
     } catch (e) {
       showSnackBar(e.toString(), context);
     }
@@ -45,6 +52,7 @@ class _SearchFundraisesState extends State<SearchFundraisesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -60,12 +68,14 @@ class _SearchFundraisesState extends State<SearchFundraisesScreen> {
           ),
         ),
         title: TextField(
+          controller: _controller,
           style: TextStyle(color: Colors.black),
-          decoration: InputDecoration(hintText: "Search.."),
+          decoration: InputDecoration(hintText: "Search title"),
         ),
         actions: [
           ActionButton(
             onPressed: () {
+              getData();
               Fluttertoast.showToast(
                   msg: "Shared", // message
                   toastLength: Toast.LENGTH_SHORT, // length
@@ -79,7 +89,8 @@ class _SearchFundraisesState extends State<SearchFundraisesScreen> {
         backgroundColor: secondaryColor,
         centerTitle: true,
       ),
-      body: SearchResultsTab(data: _Dataman),
+      body: _controller.text.length==0?
+      SearchResultsTab(data: _Dataman, keyword: 'empty'):SearchResultsTab(data: _Dataman, keyword: _controller.text,),
     );
   }
 }

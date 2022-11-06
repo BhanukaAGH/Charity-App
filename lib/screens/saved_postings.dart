@@ -12,40 +12,35 @@ class SavedFundraiserScreen extends StatefulWidget {
 }
 
 class _SavedFundraiserState extends State<SavedFundraiserScreen> {
+  bool _isLoading = false;
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: secondaryColor,
-          toolbarHeight: 80,
-          leading: IconButton(
-            tooltip: 'Back',
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.black,
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: secondaryColor,
+        toolbarHeight: 80,
+        leading: IconButton(
+          tooltip: 'Back',
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
           ),
-          title: Text(
-            'Saved Fundraisers',
-            style: GoogleFonts.urbanist(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
-              color: Colors.black,
-            ),
+        ),
+        title: Text(
+          'Saved Fundraisers',
+          style: GoogleFonts.urbanist(
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
           ),
-          centerTitle: true,
         ),
-        body: const TabBarView(
-          children: [
-            SavedFundraisersTab(),
-          ],
-        ),
+        centerTitle: true,
       ),
+      body:
+          SavedFundraisersTab(),
     );
   }
 }
