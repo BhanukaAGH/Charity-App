@@ -67,7 +67,8 @@ class _ActivityTabState extends State<ActivityTab> {
                           'uid': e.data()['uid'],
                           'date':
                               _convertDate(e.data()['publishDate'].toDate()),
-                          'amount': e.data()['ammount']
+                          'amount': e.data()['ammount'],
+                          'fundraiseId': e.data()['fundraiseId'],
                         })
                     .toList();
 
@@ -106,6 +107,7 @@ class _ActivityTabState extends State<ActivityTab> {
                             DonateTile(
                               uid: data['uid'],
                               amount: data['amount'],
+                              fundraiseId: data['fundraiseId'],
                             ),
                           ],
                         ),

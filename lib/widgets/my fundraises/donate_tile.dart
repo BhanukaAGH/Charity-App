@@ -7,11 +7,13 @@ import 'package:google_fonts/google_fonts.dart';
 class DonateTile extends StatefulWidget {
   final String uid;
   final double amount;
+  final String fundraiseId;
 
   const DonateTile({
     super.key,
     required this.uid,
     required this.amount,
+    required this.fundraiseId,
   });
 
   @override
@@ -105,6 +107,8 @@ class _DonateTileState extends State<DonateTile> {
                   imgUrl: imgUrl!,
                   name: name,
                   price: widget.amount,
+                  donorId: widget.uid,
+                  fundraiseId: widget.fundraiseId,
                 ),
               ),
             );

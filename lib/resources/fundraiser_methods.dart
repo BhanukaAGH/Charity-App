@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 import 'package:charity_app/models/fundraise.dart' as model;
-import 'package:charity_app/providers/user_provider.dart';
 import 'package:charity_app/resources/storage_methods.dart';
 import 'package:charity_app/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
