@@ -51,6 +51,9 @@ dependencies:
   http: ^0.13.5
   share_plus: ^6.2.0
   path_provider: ^2.0.11
+  flutter_svg: ^1.1.6
+  flutter_stripe: ^6.0.0
+  flutter_dotenv: ^5.0.2
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +83,11 @@ flutter:
     - assets/type1.png
     - assets/type2.png
     - assets/type3.png
+    - assets/paypal.svg
+    - assets/google.svg
+    - assets/apple.svg
+    - assets/card.svg
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
