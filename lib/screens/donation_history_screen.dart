@@ -16,7 +16,6 @@ class _DonationHistoryState extends State<DonationHistoryScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: secondaryColor,
-        toolbarHeight: 80,
         leading: IconButton(
           tooltip: 'Back',
           onPressed: () {
@@ -37,7 +36,7 @@ class _DonationHistoryState extends State<DonationHistoryScreen> {
         ),
         centerTitle: true,
       ),
-      body: DonationHistorytab(),
+      body: const DonationHistorytab(),
     );
   }
 }
