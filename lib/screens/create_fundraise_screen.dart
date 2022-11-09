@@ -2,6 +2,7 @@ import 'package:charity_app/models/user.dart';
 import 'package:charity_app/providers/user_provider.dart';
 import 'package:charity_app/resources/fundraiser_methods.dart';
 import 'package:charity_app/screens/view_member_screen.dart';
+import 'package:charity_app/screens/root_screen.dart';
 import 'package:charity_app/utils/colors.dart';
 import 'package:charity_app/utils/utils.dart';
 import 'package:charity_app/widgets/common/form_field_date.dart';
@@ -256,7 +257,15 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
             cancelText: 'Cancel',
             description: 'Your fundraising proposal has been published',
             title: 'Submit Successful!',
-            continueFunc: () {},
+            continueFunc: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RootScreen(),
+                ),
+                (route) => false,
+              );
+            },
           );
         } else {
           Fluttertoast.showToast(

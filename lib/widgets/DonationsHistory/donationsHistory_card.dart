@@ -104,7 +104,7 @@ class _DonationHistoryCardState extends State<DonationHistoryCard> {
                           Stack(
                             alignment: Alignment.topRight,
                             children: [
-                              fdata?["images"][1] != null
+                              fdata?["images"][0] != null
                                   ? SizedBox(
                                       width: constraints.maxWidth * 0.36,
                                       child: AspectRatio(
