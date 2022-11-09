@@ -48,9 +48,6 @@ class StorageMethods {
     TaskSnapshot snap = await uploadTask;
     String downloadUrl = await snap.ref.getDownloadURL();
 
-    print(("URRRLLLL"));
-    print((downloadUrl));
-
     return downloadUrl;
   }
 }
