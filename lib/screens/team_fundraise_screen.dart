@@ -28,7 +28,7 @@ class TeamFundraiseScreen extends StatelessWidget {
             ),
           ),
           title: Text(
-            'My Fundraising',
+            'My Team Fundraising',
             style: GoogleFonts.urbanist(
               fontSize: 24,
               fontWeight: FontWeight.w700,
