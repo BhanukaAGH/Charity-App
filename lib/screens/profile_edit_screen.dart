@@ -1,6 +1,4 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-//ProfileEditScreen
-//_ProfileEditScreenState
 import 'dart:typed_data';
 
 import 'package:charity_app/resources/firestore_methods.dart';
@@ -49,9 +47,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
           .get();
 
       userData = userSnap.data()!;
-      print('][][][][][PHOTOURL');
-      print(userData['photoUrl']);
-      print(userData['name']);
 
       _nameController = TextEditingController(text: userData['name']);
       setState(() {});
@@ -157,8 +152,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
       } else {
         String imageUrl =
             await StorageMethods().uploadUserImageToStorage('users', _file);
-        print("imageUrl");
-        print(imageUrl.length);
         if (imageUrl.length != 0) {
           String res = await FirestoreMethods().updateUser(
               uid: FirebaseAuth.instance.currentUser!.uid,
@@ -186,8 +179,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("photoUrl");
-    print(userData['photoUrl']);
     var size = MediaQuery.of(context).size;
     return _isLoading
         ? const Padding(

@@ -1,6 +1,9 @@
+import 'package:charity_app/resources/withdraw_methods.dart';
 import 'package:charity_app/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 enum PaymentOptions { paypal, google, apple, card }
@@ -17,10 +20,14 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
   final TextEditingController _controller = TextEditingController();
   PaymentOptions? _options = PaymentOptions.paypal;
 
+  void withdrawPayment(BuildContext context) async {
+    WithdrawMethods().makePayment(context, _controller.text, 'LKR');
+  }
+
   @override
   Widget build(BuildContext context) {
     final inputBorder = OutlineInputBorder(
-      borderSide: const BorderSide(color: greyTextColor, width: 2),
+      borderSide: const BorderSide(color: borderColor, width: 2),
       borderRadius: BorderRadius.circular(12),
     );
 
@@ -88,26 +95,14 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                       color: borderColor,
                       thickness: 1,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Select Withdraw Method',
-                          style: GoogleFonts.urbanist(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: darkTextColor,
-                          ),
-                        ),
-                        Text(
-                          'Add New Card',
-                          style: GoogleFonts.urbanist(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: primaryColor,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      'Select Withdraw Method',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.urbanist(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: darkTextColor,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     ListTile(
@@ -211,14 +206,6 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                         },
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Pay with Debit/Credit Card',
-                      style: GoogleFonts.urbanist(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
                     const SizedBox(height: 8),
                     ListTile(
                       shape: RoundedRectangleBorder(
@@ -236,7 +223,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                         width: 32,
                       ),
                       title: Text(
-                        '.... .... .... .... 5642',
+                        'Visa / Master Card',
                         style: GoogleFonts.urbanist(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
@@ -258,7 +245,23 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
               ),
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                if (_controller.text.isEmpty) {
+                  Fluttertoast.showToast(
+                    msg: 'Please enter amount',
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                  );
+                } else if (int.parse(_controller.text) < 1000) {
+                  Fluttertoast.showToast(
+                    msg: 'Please enter amount greter than 1000.',
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                  );
+                } else {
+                  withdrawPayment(context);
+                }
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,
                 shape: RoundedRectangleBorder(

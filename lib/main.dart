@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,11 +10,14 @@ import 'package:charity_app/providers/user_provider.dart';
 import 'package:charity_app/screens/login_screen.dart';
 import 'package:charity_app/utils/colors.dart';
 
-void main() async {
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: '.env');
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  Stripe.publishableKey =
+      'pk_test_51M258dCaGzBZO070LbIuendR8gfR6BPs6Nhb18P2vGOTbsI06x7hMAn1b9c8dgTftVD1rFrFlv54xRGZSlMzyAvH00giXghqM0';
   runApp(const MyApp());
 }
 
