@@ -33,4 +33,21 @@ class StorageMethods {
 
     return downloadUrl;
   }
+  //adding single image to firebase USERS storage
+  Future<String> uploadUserImageToStorage(
+      String childName, Uint8List? file) async {
+    Reference ref = _storage
+        .ref()
+        .child(childName)
+        .child(_auth.currentUser!.uid);
+
+    String id = const Uuid().v1();
+    ref = ref.child(id);
+
+    UploadTask uploadTask = ref.putData(file!);
+    TaskSnapshot snap = await uploadTask;
+    String downloadUrl = await snap.ref.getDownloadURL();
+
+    return downloadUrl;
+  }
 }
