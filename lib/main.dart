@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Charity App',
+        title: 'Largesse',
         theme: ThemeData(
           colorScheme: ThemeData().colorScheme.copyWith(
                 primary: primaryColor,
