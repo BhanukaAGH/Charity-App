@@ -1,6 +1,7 @@
 import 'package:charity_app/models/user.dart';
 import 'package:charity_app/providers/user_provider.dart';
 import 'package:charity_app/resources/fundraiser_methods.dart';
+import 'package:charity_app/screens/view_member_screen.dart';
 import 'package:charity_app/utils/colors.dart';
 import 'package:charity_app/utils/utils.dart';
 import 'package:charity_app/widgets/common/form_field_date.dart';
@@ -13,6 +14,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+
+import '../resources/team_fundraise_methos.dart';
 
 class CreateFundraiseScreen extends StatefulWidget {
   final String fundraiseType;
@@ -181,29 +185,70 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
 
     bool isDraft = type == 'submit' ? false : true;
     try {
-      String res = await FundraiserMethods().createFundraise(
-        uid: uid,
-        title: _titleController.text,
-        category: fundraiseCategory,
-        goal: _goalController.text.isEmpty
-            ? 0
-            : double.parse(_goalController.text),
-        expireDate: _dateController.text.isEmpty
-            ? DateTime.now()
-            : DateTime.parse(_dateController.text),
-        story: _storyController.text,
-        images: [coverimage, image1, image2, image3, image4],
-        recipientName: _nameController.text,
-        recipientPhone: _phoneController.text,
-        recipientEmail: _emailController.text,
-        isDraft: isDraft,
-        fundraiseType: widget.fundraiseType,
-      );
+      String fundraiseId = const Uuid().v1();
+
+      String res;
+      //Change the create fundraiser method base on fundraise Type
+      if (widget.fundraiseType == 'teams') {
+        res = await TeamFundraiserMethods().createFundraise(
+          fundraiseId: fundraiseId,
+          uid: uid,
+          title: _titleController.text,
+          category: fundraiseCategory,
+          goal: _goalController.text.isEmpty
+              ? 0
+              : double.parse(_goalController.text),
+          expireDate: _dateController.text.isEmpty
+              ? DateTime.now()
+              : DateTime.parse(_dateController.text),
+          story: _storyController.text,
+          images: [coverimage, image1, image2, image3, image4],
+          recipientName: _nameController.text,
+          recipientPhone: _phoneController.text,
+          recipientEmail: _emailController.text,
+          isDraft: isDraft,
+          fundraiseType: widget.fundraiseType,
+        );
+      } else {
+        res = await FundraiserMethods().createFundraise(
+          uid: uid,
+          title: _titleController.text,
+          category: fundraiseCategory,
+          goal: _goalController.text.isEmpty
+              ? 0
+              : double.parse(_goalController.text),
+          expireDate: _dateController.text.isEmpty
+              ? DateTime.now()
+              : DateTime.parse(_dateController.text),
+          story: _storyController.text,
+          images: [coverimage, image1, image2, image3, image4],
+          recipientName: _nameController.text,
+          recipientPhone: _phoneController.text,
+          recipientEmail: _emailController.text,
+          isDraft: isDraft,
+          fundraiseType: widget.fundraiseType,
+        );
+      }
 
       if (res == 'success') {
         setState(() {
           _isLoading = false;
         });
+
+        if (widget.fundraiseType == 'teams') {
+          clearImage();
+          // String id = FundraiserMethods().fundraiseId();
+          // print(id);
+          // ignore: use_build_context_synchronously
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CreateGroup(fundraiserId: fundraiseId),
+            ),
+          );
+          return;
+        }
+
         if (!isDraft) {
           showAlertDialog(
             context: context,
@@ -267,9 +312,11 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
           ),
         ),
         title: Text(
-          'Create New Fundraise',
+          widget.fundraiseType == 'teams'
+              ? 'Create New Team Fundraise'
+              : 'Create New Fundraise',
           style: GoogleFonts.urbanist(
-            fontSize: 24,
+            fontSize: widget.fundraiseType == 'teams' ? 22 : 24,
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
