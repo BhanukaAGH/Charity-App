@@ -2,15 +2,7 @@ import 'package:charity_app/widgets/SavedFundraisers/savedFundraiser_Card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../../utils/utils.dart';
-
-// final List<String> categoryList = [
-//   "Education",
-//   "Medical",
-//   "Emergencies",
-//   "Environment",
-// ];
 
 class SavedFundraisersTab extends StatefulWidget {
   const SavedFundraisersTab({super.key});
@@ -29,7 +21,6 @@ class _SavedFundraisersState extends State<SavedFundraisersTab> {
   }
 
   getData() async {
-    // print("_Dataman_Dataman_Dataman_Dataman_Dataman_Dataman");
     setState(() {
       _isLoading = true;
     });
@@ -44,9 +35,7 @@ class _SavedFundraisersState extends State<SavedFundraisersTab> {
       setState(() {
         _isLoading = false;
       });
-      // print(_Dataman);
     } catch (e) {
-      // print(e);
       showSnackBar(e.toString(), context);
     }
     setState(() {
@@ -66,9 +55,7 @@ class _SavedFundraisersState extends State<SavedFundraisersTab> {
             width: double.infinity,
             padding: const EdgeInsets.all(12),
             child: SingleChildScrollView(
-              child: 
-              
-              Container(
+              child: SizedBox(
                 height: size.height - kToolbarHeight - 24,
                 child: StreamBuilder(
                   stream: FirebaseFirestore.instance
@@ -85,31 +72,15 @@ class _SavedFundraisersState extends State<SavedFundraisersTab> {
                       );
                     }
                     return ListView.builder(
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (context, index) => SaveFundraiseCard(
-                            Snap: snapshot.data!.docs[index].data()));
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) => SaveFundraiseCard(
+                        Snap: snapshot.data!.docs[index].data(),
+                      ),
+                    );
                   },
                 ),
               ),
-              //  Column(
-              //   children:  [
-              //     ..._Dataman
-              //             .map((e) => SaveFundraiseCard(
-              //                   // data: e,
-              //                   imageUrl: e["images"][0],
-              //                   title: e['title'],
-              //                   goal:e['goal'],
-              //                   raisedAmount: 20,
-              //                   donatorsCount: 2,
-              //                   daysLeft: 10,
-              //                 ))
-              //             .toList(),
-              //   ],
-              // ),
             ),
           );
   }
 }
-
-
-

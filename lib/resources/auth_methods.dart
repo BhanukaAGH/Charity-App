@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:charity_app/models/user.dart' as model;
+import 'package:flutter/foundation.dart';
 
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -77,7 +78,7 @@ class AuthMethods {
     try {
       await _auth.signOut();
     } catch (err) {
-      print(err.toString());
+      debugPrint(err.toString());
     }
   }
 }

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:charity_app/resources/auth_methods.dart';
 import 'package:charity_app/screens/signup_screen.dart';
 import 'package:charity_app/utils/colors.dart';
-import 'package:charity_app/utils/utils.dart';
 import 'package:charity_app/widgets/common/text_field_input.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
@@ -27,20 +28,26 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void loginUser() async {
+    final isFormValid = _formKey.currentState!.validate();
+    if (isFormValid == false) {
+      return;
+    }
     setState(() {
       _isLoading = true;
     });
+    final navigator = Navigator.of(context);
     String res = await AuthMethods().loginUser(
         email: _emailController.text, password: _passwordController.text);
 
     if (res == 'success') {
-      Navigator.of(context).pushReplacement(
+      navigator.pushReplacement(
         MaterialPageRoute(
           builder: (context) => const RootScreen(),
         ),
       );
     } else {
-      showSnackBar(res, context);
+      Fluttertoast.showToast(
+          msg: res, backgroundColor: Colors.red, textColor: Colors.white);
     }
 
     setState(() {
@@ -69,12 +76,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 hasScrollBody: false,
                 child: Column(
                   children: [
-                    const SizedBox(height: 42),
+                    const Spacer(flex: 2),
                     Image.asset(
                       'assets/logo.png',
                       height: 160,
                     ),
-                    const SizedBox(height: 42),
+                    const Spacer(),
                     Text(
                       'Sign in to your account',
                       style: GoogleFonts.urbanist(
@@ -83,18 +90,30 @@ class _LoginScreenState extends State<LoginScreen> {
                         letterSpacing: -0.1,
                       ),
                     ),
-                    const SizedBox(height: 32),
-                    TextFieldInput(
-                      textEditingController: _emailController,
-                      hintText: 'Enter your email',
-                      textInputType: TextInputType.emailAddress,
-                    ),
-                    const SizedBox(height: 18),
-                    TextFieldInput(
-                      textEditingController: _passwordController,
-                      hintText: 'Enter your password',
-                      textInputType: TextInputType.text,
-                      isPass: true,
+                    const Spacer(),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          TextFieldInput(
+                            textEditingController: _emailController,
+                            label: 'Email Address',
+                            hintText: 'Enter your email',
+                            textInputType: TextInputType.emailAddress,
+                            isEmail: true,
+                            textInputAction: TextInputAction.next,
+                          ),
+                          const SizedBox(height: 18),
+                          TextFieldInput(
+                            textEditingController: _passwordController,
+                            label: 'Password',
+                            hintText: 'Enter your password',
+                            textInputType: TextInputType.text,
+                            isPass: true,
+                            textInputAction: TextInputAction.done,
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 36),
                     InkWell(
@@ -125,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                       ),
                     ),
-                    const Spacer(),
+                    const Spacer(flex: 2),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

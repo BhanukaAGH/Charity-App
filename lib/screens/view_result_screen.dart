@@ -1,3 +1,4 @@
+import 'package:charity_app/screens/withdraw_screen.dart';
 import 'package:charity_app/utils/colors.dart';
 import 'package:charity_app/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -306,7 +307,15 @@ class ViewResultScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 24),
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          WithdrawScreen(fundraiseId: snap['fundraiseId']),
+                    ),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryColor,
                   shape: RoundedRectangleBorder(

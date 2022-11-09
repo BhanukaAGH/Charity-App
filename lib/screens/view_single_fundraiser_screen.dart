@@ -1,15 +1,11 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:charity_app/screens/donate_screen.dart';
 import 'package:charity_app/utils/colors.dart';
 import 'package:charity_app/widgets/Donations/recent_donations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../resources/firestore_methods.dart';
 import '../utils/utils.dart';
 import '../widgets/common/action_button_2.dart';
@@ -47,8 +43,6 @@ class _ViewSingleFundraiserScreenState
     recentDonation();
   }
 
-  //  fundraiseId: widget.record['fundraiseId'],
-  // uid: FirebaseAuth.instance.currentUser!.uid,
   check() async {
     setState(() {
       isLoading = true;
@@ -67,12 +61,10 @@ class _ViewSingleFundraiserScreenState
           .get();
       _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
       if (_Dataman.length == 0) {
-        //print("not saved");
         setState(() {
           _alreadySaved = "unsave";
         });
       } else {
-        //print("saved");
         setState(() {
           _alreadySaved = "save";
         });
@@ -100,12 +92,10 @@ class _ViewSingleFundraiserScreenState
           .get();
       _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
       if (_Dataman.length == 0) {
-        //print("not donated");
         setState(() {
           _alreadyDonated = "donate";
         });
       } else {
-        //print("donated");
         setState(() {
           _alreadyDonated = "donated";
         });
@@ -146,11 +136,8 @@ class _ViewSingleFundraiserScreenState
         _Datauser = querySnapshot.docs.map((doc) => doc.data()).toList();
         final Name = _Datauser.map((e) => e['name']);
         data.add('$Name Donated $ammount');
-        // print("datadatadatadata");
-        // print(data);
         donors = data;
       });
-      // print(_Dataman);
     } catch (e) {
       showSnackBar(e.toString(), context);
     }
@@ -168,8 +155,6 @@ class _ViewSingleFundraiserScreenState
         fundraiseId: id,
         uid: FirebaseAuth.instance.currentUser!.uid,
       );
-
-      // print(res);
 
       if (res == 'success') {
         setState(() {
@@ -205,14 +190,11 @@ class _ViewSingleFundraiserScreenState
           .where('fundraiseId', isEqualTo: widget.record['fundraiseId'])
           .get();
       _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
-      print(_Dataman);
-      // final data=_Dataman.map((e) => raised=raised+ e['ammount']);
 
       _Dataman.forEach((element) {
         raised = raised + element['ammount'];
       });
       raisedammount = raised;
-      // print(raisedammount);
     } catch (e) {
       showSnackBar(e.toString(), context);
     }
@@ -221,7 +203,6 @@ class _ViewSingleFundraiserScreenState
     });
   }
 
-//unsave
   unsave(id) async {
     setState(() {
       isLoading = true;
@@ -230,8 +211,6 @@ class _ViewSingleFundraiserScreenState
       String res = await FirestoreMethods().unsavedFundraise(
         fundraiseId: id,
       );
-
-      // print(res);
 
       if (res == 'success') {
         setState(() {
@@ -252,44 +231,9 @@ class _ViewSingleFundraiserScreenState
     });
   }
 
-// //donate
-//   donate() async {
-//     setState(() {
-//       isLoading = true;
-//     });
-//     try {
-//       String res = await DonationMethods().createDonation(
-//         fundraiseId: widget.record['fundraiseId'],
-//         uid: FirebaseAuth.instance.currentUser!.uid,
-//       );
-
-//       print(res);
-
-//       if (res == 'success') {
-//         setState(() {
-//           _isLoading = false;
-//         });
-//         showSnackBar('Donated!', context);
-//       } else {
-//         setState(() {
-//           _isLoading = false;
-//         });
-//         showSnackBar(res, context);
-//       }
-//     } catch (e) {
-//       showSnackBar(e.toString(), context);
-//     }
-//     setState(() {
-//       isLoading = false;
-//     });
-//   }
-
   @override
   Widget build(BuildContext context) {
-    // print(']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]');
-    // print(widget.record["fundraiseId"]);
     var size = MediaQuery.of(context).size;
-    //widget.record["name"]
     return Scaffold(
       appBar: AppBar(
         elevation: 2,
@@ -314,8 +258,6 @@ class _ViewSingleFundraiserScreenState
         actions: [
           ActionButton2(
             onPressed: () {
-              // print("datadatadatadatadatadata");
-              // print(donors[0]);
               Fluttertoast.showToast(
                   msg: "Shared", // message
                   toastLength: Toast.LENGTH_SHORT, // length
@@ -349,7 +291,6 @@ class _ViewSingleFundraiserScreenState
         backgroundColor: secondaryColor,
         centerTitle: true,
       ),
-      //_descseemore == "expand" ? null : 4
       body: Container(
         decoration: BoxDecoration(
             color:
@@ -397,23 +338,14 @@ class _ViewSingleFundraiserScreenState
                       ],
                     ),
                   ),
-                  // const SizedBox(height: 12),
-                  // const Divider(
-                  //   thickness: 0.8,
-                  //   color: borderColor,
-                  // ),
-                  // const SizedBox(height: 6),
                   const SizedBox(height: 10),
                   Container(
                     padding: const EdgeInsets.only(left: 0.0, right: 0.0),
-                    // ignore: prefer_const_constructors
                     child: ClipRRect(
                       borderRadius: const BorderRadius.all(
                         Radius.circular(12),
                       ),
-                      // ignore: prefer_const_constructors
                       child: LinearProgressIndicator(
-                        // value: (raisedAmount / goal),
                         value: (raisedammount / widget.record['goal']),
                         color: primaryColor,
                         backgroundColor: progressBackgroundColor,
@@ -426,7 +358,6 @@ class _ViewSingleFundraiserScreenState
                     padding: EdgeInsets.only(left: 0.0, top: 0.0),
                     child: RichText(
                       text: TextSpan(
-                        // text: widget.record["ExpectedAmmount"].toString(),
                         text: raisedammount.toString(),
                         style: GoogleFonts.urbanist(
                           color: primaryColor,
@@ -442,8 +373,6 @@ class _ViewSingleFundraiserScreenState
                             ),
                           ),
                           TextSpan(
-                            // text: "\$${goal.toInt()}",
-                            //text:widget.record["ExpectedAmmount"].toString(),
                             text: widget.record['goal'].toString(),
                             style: GoogleFonts.urbanist(
                               color: primaryColor,
@@ -459,7 +388,6 @@ class _ViewSingleFundraiserScreenState
                     padding: EdgeInsets.only(top: 0.0),
                     child: RichText(
                       text: TextSpan(
-                        // text: "\$${raisedAmount.toInt()}",
                         text: "About Fund Raiser",
                         style: GoogleFonts.urbanist(
                             fontSize: 20,
@@ -485,7 +413,6 @@ class _ViewSingleFundraiserScreenState
                               color: Color.fromARGB(255, 0, 0, 0)),
                         ),
                         Text(
-                          // 'Raising For: ${widget.record["FundRaisingFor"]}',
                           'Raising For: ',
                           textAlign: TextAlign.start,
                           style: GoogleFonts.urbanist(
@@ -536,7 +463,6 @@ class _ViewSingleFundraiserScreenState
                       ),
                     ),
                   ),
-
                   Container(
                     padding: EdgeInsets.only(left: 0.0, top: 0.0),
                     child: RichText(
@@ -559,8 +485,6 @@ class _ViewSingleFundraiserScreenState
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                             color: Color.fromARGB(255, 135, 135, 135)),
-                        // maxLines: (_seemoreDescription=='expand'? null:4),
-                        // overflow: (_seemoreDescription=='expand'? null:TextOverflow.ellipsis),
                         maxLines: (_descseemore == "expand" ? null : 4),
                         overflow: (_descseemore == "expand"
                             ? null
@@ -601,7 +525,6 @@ class _ViewSingleFundraiserScreenState
                     padding: EdgeInsets.only(left: 0.0, top: 0.0),
                     child: RichText(
                       text: TextSpan(
-                        // text: "\$${raisedAmount.toInt()}",
                         text: "Recent Donor:",
                         style: GoogleFonts.urbanist(
                             fontSize: 15,
@@ -610,7 +533,7 @@ class _ViewSingleFundraiserScreenState
                       ),
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     height: 100,
                     child: StreamBuilder(
                       stream: FirebaseFirestore.instance
@@ -621,7 +544,8 @@ class _ViewSingleFundraiserScreenState
                       builder: (context,
                           AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
                               snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
@@ -743,7 +667,3 @@ class _ViewSingleFundraiserScreenState
     );
   }
 }
-
-//  setState(() {
-//                             _opencontact = 'close';
-//                           });

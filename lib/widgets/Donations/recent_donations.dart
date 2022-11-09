@@ -29,16 +29,15 @@ class _RecentDonorsState extends State<RecentDonors> {
     _Datauser = querySnapshot.docs.map((doc) => doc.data()).toList();
     final Name = _Datauser.map((e) => e['name']).toString();
 
-    NameOfDonor=Name.toString();
-    // print(NameOfDonor);
+    NameOfDonor = Name.toString();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          border: Border.all(color: Color.fromARGB(255, 0, 0, 0))),
-      padding: EdgeInsets.all(5.0),
+          border: Border.all(color: const Color.fromARGB(255, 0, 0, 0))),
+      padding: const EdgeInsets.all(5.0),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         IntrinsicHeight(
           child: Row(

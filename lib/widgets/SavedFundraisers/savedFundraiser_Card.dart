@@ -10,23 +10,6 @@ class SaveFundraiseCard extends StatefulWidget {
   final Snap;
   const SaveFundraiseCard({required this.Snap, super.key});
 
-  // final String imageUrl;
-  // final String title;
-  // final double goal;
-  // final double raisedAmount;
-  // final int donatorsCount;
-  // final int daysLeft;
-
-  // const SaveFundraiseCard({
-  //   super.key,
-  //   required this.imageUrl,
-  //   required this.title,
-  //   required this.goal,
-  //   required this.raisedAmount,
-  //   required this.donatorsCount,
-  //   required this.daysLeft,
-  // });
-
   @override
   State<SaveFundraiseCard> createState() => _SaveFundraiseCardState();
 }
@@ -57,10 +40,6 @@ class _SaveFundraiseCardState extends State<SaveFundraiseCard> {
         Map<String, dynamic>? data = docSnapshot.data();
         fdata = data;
         donated = widget.Snap['ammount'];
-        // donatedOn = widget.Snap['publishDate'].toDate().toString().substring(
-        //     0, widget.Snap['publishDate'].toDate().toString().length - 13);
-        // // print(widget.Snap['publishDate'].toDate().toString().substring(
-        // //     0, widget.Snap['publishDate'].toDate().toString().length - 13));
       }
       getdonated();
     } catch (e) {
@@ -76,26 +55,17 @@ class _SaveFundraiseCardState extends State<SaveFundraiseCard> {
       _isLoading = true;
     });
     var raised = 0.0;
-    // var collection = FirebaseFirestore.instance.collection('donations');
-    // var docSnapshot = await collection
-    //     .where('fundraiseId', isEqualTo: widget.Snap['fundraiseId'])
-    //     .get();
     CollectionReference _collectionRef =
         FirebaseFirestore.instance.collection('donations');
     QuerySnapshot querySnapshot = await _collectionRef
         .where('fundraiseId', isEqualTo: widget.Snap['fundraiseId'])
         .get();
     _Dataman = querySnapshot.docs.map((doc) => doc.data()).toList();
-    // print("objectobjectobject");
-    // print(_Dataman);
     donors = _Dataman.length;
     _Dataman.forEach((element) {
       raised = raised + element['ammount'];
     });
-    // print("length");
-    // print(raised);
     raisedammount = raised;
-    // print(raisedammount);
     setState(() {
       _isLoading = false;
     });
@@ -108,8 +78,6 @@ class _SaveFundraiseCardState extends State<SaveFundraiseCard> {
       String res = await FirestoreMethods().unsavedFundraise(
         fundraiseId: id,
       );
-
-      // print(res);
 
       if (res == 'success') {
         setState(() {
@@ -129,8 +97,6 @@ class _SaveFundraiseCardState extends State<SaveFundraiseCard> {
 
   @override
   Widget build(BuildContext context) {
-    // print("objectobjectobjectobjecst");
-    // print(widget.Snap?['fundraiseId']);
     return _isLoading
         ? const Padding(
             padding: EdgeInsets.symmetric(vertical: 12),
@@ -141,8 +107,7 @@ class _SaveFundraiseCardState extends State<SaveFundraiseCard> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        ViewSingleFundraiserScreen(fdata)),
+                    builder: (context) => ViewSingleFundraiserScreen(fdata)),
               );
             },
             child: fdata?["title"] != null
@@ -279,7 +244,8 @@ class _SaveFundraiseCardState extends State<SaveFundraiseCard> {
                                             ),
                                             child: LinearProgressIndicator(
                                               // value:(raisedammount / fdata?["goal"]),
-                                              value: (raisedammount / fdata?["goal"]),
+                                              value: (raisedammount /
+                                                  fdata?["goal"]),
                                               color: primaryColor,
                                               backgroundColor:
                                                   progressBackgroundColor,
