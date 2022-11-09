@@ -267,9 +267,11 @@ class _CreateFundraiseScreenState extends State<CreateFundraiseScreen> {
           ),
         ),
         title: Text(
-          'Create New Fundraise',
+          widget.fundraiseType == 'charity'
+              ? 'Create New Charity Fundraise'
+              : 'Create New Fundraise',
           style: GoogleFonts.urbanist(
-            fontSize: 24,
+            fontSize: widget.fundraiseType == 'charity' ? 22 : 24,
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
