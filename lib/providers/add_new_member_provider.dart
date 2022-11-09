@@ -18,23 +18,6 @@ class AddNewMember with ChangeNotifier {
     return userList;
   }
 
-  // Future<void> createGroup(
-  //     String userId, String fundraiseId, List<String> memberIds) async {
-  //   String groupId = const Uuid().v1();
-  //   print(memberIds);
-  //   try {
-  //     final group = {
-  //       'groupId': groupId,
-  //       'leaderId': userId,
-  //       'fundraiseId': fundraiseId,
-  //       'membersIds': memberIds
-  //     };
-  //     await _firestore.collection('group').doc(groupId).set(group);
-  //   } catch (err) {
-  //     print(err);
-  //   }
-  // }
-
   Future<List<String>> fetchGroup() async {
     String? userId = _auth.currentUser?.uid;
     final group = _firestore.collection('group');
