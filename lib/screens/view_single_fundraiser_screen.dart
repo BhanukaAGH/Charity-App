@@ -319,21 +319,28 @@ class _ViewSingleFundraiserScreenState
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          widget.record['title'],
-                          textAlign: TextAlign.start,
-                          style: GoogleFonts.urbanist(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
+                        SizedBox(
+                          width: size.width * 0.6,
+                          child: Text(
+                            widget.record['title'],
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            maxLines: 2,
+                            textAlign: TextAlign.start,
+                            style: GoogleFonts.urbanist(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                         Text(
-                          'Posted On: ${posteddate}',
+                          'Posted On: $posteddate',
+                          softWrap: true,
                           textAlign: TextAlign.start,
                           style: GoogleFonts.urbanist(
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
-                              color: Color.fromARGB(255, 123, 123, 123)),
+                              color: const Color.fromARGB(255, 123, 123, 123)),
                         ),
                       ],
                     ),
