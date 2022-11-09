@@ -2,6 +2,7 @@
 
 import 'package:charity_app/resources/auth_methods.dart';
 import 'package:charity_app/screens/login_screen.dart';
+import 'package:charity_app/screens/profile_edit_screen.dart';
 import 'package:charity_app/screens/saved_postings.dart';
 import 'package:charity_app/screens/select_fundraise_screen.dart';
 import 'package:charity_app/utils/utils.dart';
@@ -42,7 +43,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           .get();
 
       userData = userSnap.data()!;
-
       setState(() {});
     } catch (e) {
       showSnackBar(e.toString(), context);
@@ -79,10 +79,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            child: Image.asset(
-                              'assets/logo.png',
-                              width: 48,
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: CircleAvatar(
+                              radius: 64,
+                              backgroundImage: NetworkImage(userData[
+                                        'photoUrl'] ??
+                                    'https://st.depositphotos.com/1052233/2815/v/600/depositphotos_28158459-stock-illustration-male-default-profile-picture.jpg'),
                             ),
                           ),
                           ElevatedButton(
@@ -91,7 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      const SelectFundraiseScreen(),
+                                      const ProfileEditScreen(),
                                 ),
                               );
                             },
