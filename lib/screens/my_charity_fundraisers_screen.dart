@@ -7,13 +7,15 @@ import 'package:charity_app/widgets/my%20fundraises/fundraiser_list_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../widgets/my fundraises/charityfundraiser_list_tab.dart';
+
 class MyCharityFundraisersScreen extends StatelessWidget {
   const MyCharityFundraisersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 1,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: secondaryColor,
@@ -53,7 +55,7 @@ class MyCharityFundraisersScreen extends StatelessWidget {
         ),
         body: const TabBarView(
           children: [
-            FundraisersTab(),
+            CharityFundraisersTab(),
           ],
         ),
       ),

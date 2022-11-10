@@ -27,8 +27,13 @@ final List<String> categoryList = [
 ];
 
 final List<String> organizationyList = [
-  "sdadsa",
-  "aaaa",
+  "Red Cross Organization",
+  "United Way",
+  "World Vision",
+  "Save the Children",
+  "UNICEF",
+  "Oxfam",
+  "Doctors Without Borders",
 ];
 
 enum FundraiseType {
