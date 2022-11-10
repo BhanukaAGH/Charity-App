@@ -26,6 +26,11 @@ final List<String> categoryList = [
   "Family",
 ];
 
+final List<String> organizationyList = [
+  "sdadsa",
+  "aaaa",
+];
+
 enum FundraiseType {
   mySelf,
   teams,

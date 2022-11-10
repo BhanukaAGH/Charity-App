@@ -5,6 +5,7 @@ class Fundraise {
   final String uid;
   final String title;
   final String category;
+  final String? Organization;
   final double goal;
   final DateTime expireDate;
   final DateTime publishDate;
@@ -21,6 +22,7 @@ class Fundraise {
     required this.uid,
     required this.title,
     required this.category,
+    this.Organization,
     required this.goal,
     required this.expireDate,
     required this.publishDate,
@@ -39,6 +41,7 @@ class Fundraise {
       'uid': uid,
       'title': title,
       'category': category,
+      'Organization': Organization,
       'goal': goal,
       'expireDate': expireDate,
       'publishDate': publishDate,
@@ -60,6 +63,7 @@ class Fundraise {
       uid: snapshot['uid'],
       title: snapshot['title'],
       category: snapshot['category'],
+      Organization: snapshot['Organization'],
       goal: snapshot['goal'],
       expireDate: snapshot['expireDate'],
       publishDate: snapshot['publishDate'],
