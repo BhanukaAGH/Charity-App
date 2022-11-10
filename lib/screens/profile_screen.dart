@@ -4,6 +4,7 @@ import 'package:charity_app/resources/auth_methods.dart';
 import 'package:charity_app/screens/login_screen.dart';
 import 'package:charity_app/screens/profile_edit_screen.dart';
 import 'package:charity_app/screens/saved_postings.dart';
+import 'package:charity_app/screens/team_fundraise_screen.dart';
 import 'package:charity_app/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -173,6 +174,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: ListTile(
                             leading: Icon(Icons.local_offer),
                             title: Text('My Fundraisers'),
+                            shape: Border(bottom: BorderSide()),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const TeamFundraiseScreen(),
+                              ),
+                            );
+                          },
+                          child: ListTile(
+                            leading: Icon(Icons.people),
+                            title: Text('Team Fundraise'),
                             shape: Border(bottom: BorderSide()),
                           ),
                         ),

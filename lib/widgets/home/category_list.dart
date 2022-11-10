@@ -30,9 +30,11 @@ class _CategoryListState extends State<CategoryList> {
       categories.add(element['category']);
     }
 
-    setState(() {
-      categories;
-    });
+    if (mounted) {
+      setState(() {
+        categories;
+      });
+    }
   }
 
   @override

@@ -1,3 +1,4 @@
+import 'package:charity_app/providers/add_new_member_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -31,10 +32,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => UserProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => AddNewMember(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Charity App',
+        title: 'Largesse',
         theme: ThemeData(
           colorScheme: ThemeData().colorScheme.copyWith(
                 primary: primaryColor,

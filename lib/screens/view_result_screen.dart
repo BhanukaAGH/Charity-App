@@ -41,7 +41,7 @@ class ViewResultScreen extends StatelessWidget {
       },
       {
         'name': 'Prayers',
-        'value': '1620',
+        'value': '26',
       },
     ];
 

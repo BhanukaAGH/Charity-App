@@ -155,7 +155,15 @@ class _EditFundraiseScreenState extends State<EditFundraiseScreen> {
           cancelText: 'Cancel',
           description: 'Your fundraising proposal has been published',
           title: 'Submit Successful!',
-          continueFunc: () {},
+          continueFunc: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const RootScreen(),
+              ),
+              (route) => false,
+            );
+          },
         );
       } else {
         setState(() {
