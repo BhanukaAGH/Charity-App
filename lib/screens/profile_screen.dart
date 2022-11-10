@@ -12,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../utils/colors.dart';
 import '../widgets/home/curve_painter.dart';
 import 'donation_history_screen.dart';
+import 'my_charity_fundraisers_screen.dart';
 import 'my_fundraises_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -189,6 +190,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: ListTile(
                             leading: Icon(Icons.people),
                             title: Text('Team Fundraise'),
+                            shape: Border(bottom: BorderSide()),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const MyCharityFundraisersScreen(),
+                              ),
+                            );
+                          },
+                          child: ListTile(
+                            leading: Icon(Icons.yard),
+                            title: Text('My Charity Fundraisers'),
                             shape: Border(bottom: BorderSide()),
                           ),
                         ),

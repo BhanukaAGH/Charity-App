@@ -4,6 +4,8 @@ import 'package:charity_app/utils/global_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'create_charity_fundraise_screen.dart';
+
 class SelectFundraiseScreen extends StatelessWidget {
   const SelectFundraiseScreen({super.key});
 
@@ -68,14 +70,26 @@ class SelectFundraiseScreen extends StatelessWidget {
                     return InkWell(
                       splashColor: lightPrimaryColor,
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CreateFundraiseScreen(
-                              fundraiseType: types[index]['type'],
+                        if (types[index]['type'] == 'charity') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  CreateCharityFundraiseScreen(
+                                fundraiseType: types[index]['type'],
+                              ),
                             ),
-                          ),
-                        );
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CreateFundraiseScreen(
+                                fundraiseType: types[index]['type'],
+                              ),
+                            ),
+                          );
+                        }
                       },
                       child: Container(
                         decoration: BoxDecoration(

@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:uuid/uuid.dart';
 
-class FundraiserMethods {
+class CharityFundraiserMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -16,7 +16,6 @@ class FundraiserMethods {
     required String uid,
     required String title,
     required String category,
-    String? Organization,
     required double goal,
     required DateTime expireDate,
     required String story,
@@ -39,7 +38,6 @@ class FundraiserMethods {
         uid: uid,
         title: title,
         category: category,
-        Organization: Organization,
         goal: goal,
         expireDate: expireDate,
         publishDate: DateTime.now(),

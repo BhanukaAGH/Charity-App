@@ -26,6 +26,16 @@ final List<String> categoryList = [
   "Family",
 ];
 
+final List<String> organizationyList = [
+  "Red Cross Organization",
+  "United Way",
+  "World Vision",
+  "Save the Children",
+  "UNICEF",
+  "Oxfam",
+  "Doctors Without Borders",
+];
+
 enum FundraiseType {
   mySelf,
   teams,
